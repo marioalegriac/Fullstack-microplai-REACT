@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { moverCarrusel } from "../funciones/funciones.js";
 
+
 function Home() {
   const [mensajeVisible, setMensajeVisible] = useState(false);
 
@@ -77,6 +78,7 @@ function Home() {
     },
   ];
 
+  
   const agregarAlCarrito = (producto) => {
     const carritoActual = JSON.parse(localStorage.getItem("carrito")) || [];
     const existente = carritoActual.find((item) => item.id === producto.id);
@@ -93,7 +95,6 @@ function Home() {
     setMensajeVisible(true);
     setTimeout(() => setMensajeVisible(false), 1500);
   };
-
 
   return (
     <main>

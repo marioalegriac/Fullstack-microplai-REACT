@@ -8,6 +8,8 @@ import Play from "./pages/Play";
 import Xbox from "./pages/Xbox";
 import Nintendo from "./pages/Nintendo";
 import Carrito from "./pages/Carrito";
+import Registro from "./pages/Registro";
+import Login from "./pages/Login";
 import "./App.css";
 import "./index.css";
 
@@ -23,6 +25,8 @@ function App() {
         <Route path="/Xbox" element={<Xbox />} />
         <Route path="/Nintendo" element={<Nintendo />} />
         <Route path="/Carrito" element={<Carrito />} />
+        <Route path="/Registro" element={<Registro />} />
+        <Route path="/Login" element={<Login />} />
       </Routes>
     </MainLayout>
   );
