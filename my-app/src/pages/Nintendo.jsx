@@ -1,127 +1,144 @@
 import React from 'react'
-import { obtenerInfoJuego } from '../funciones/funciones';
-import { agregarAlCarrito } from '../funciones/funciones';
+import { Link } from "react-router-dom";
+
 
 function Nintendo() {
   const [mensajeVisible, setMensajeVisible] = React.useState(false);
-  const [mensajeTexto, setMensajeTexto] = React.useState("");
+  const [setMensajeTexto] = React.useState("");
+
 
   const juegos =[
     {
     id:36,
     nombre: "Mario kart world ",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 85990,
-    imagen: "/images/nintendo/Mario kart world switch 2.png",
+    imagen: "public/images/nintendo/Mario kart world switch 2.png",
   },
   {
     id:37,
     nombre: "Donkey Kong bananza",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 75990,
-    imagen: "/images/nintendo/Donkey Kong bananza switch 2.png",
+    imagen: "public/images/nintendo/Donkey Kong bananza switch 2.png",
   },
   {
     id:38,
     nombre: "Daemon x machine",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 58990,
-    imagen: "/images/nintendo/Donkey Kong bananza switch 2.png",
+    imagen: "public/images/nintendo/Donkey Kong bananza switch 2.png",
   },
   {
     id:39,
     nombre: "Kirby air riders",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 82990,
-    imagen: "/images/nintendo/Kirby air riders switch 2.png",
+    imagen: "public/images/nintendo/Kirby air riders switch 2.png",
   },
   {
     id:40,
     nombre: "Little nightmares 3",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 73990,
-    imagen: "/images/nintendo/Little nightmares 3 switch 2.png",
+    imagen: "public/images/nintendo/Little nightmares 3 switch 2.png",
   },
   {
     id:41,
     nombre: "Kirby and the forgottenland",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 79990,
-    imagen: "/images/nintendo/Kirby and the forgottenland switch 2.png",
+    imagen: "public/images/nintendo/Kirby and the forgottenland switch 2.png",
   },
   {
     id:42,
     nombre: "Pokemon legends",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 74990,
-    imagen: "/images/nintendo/Pokemon legends switch 2.png",
+    imagen: "public/images/nintendo/Pokemon legends switch 2.png",
   },
   {
     id:43,
     nombre: "Persona 3",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 74990,
-    imagen: "/images/nintendo/Persona 3 switch 2.png",
+    imagen: "public/images/nintendo/Persona 3 switch 2.png",
   },
   {
     id:44,
     nombre: "The legend of Zelda breath of the wild",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 79990,
-    imagen: "/images/nintendo/The legend of Zelda breath of the wild switch 2.png",
+    imagen: "public/images/nintendo/The legend of Zelda breath of the wild switch 2.png",
   },
   {
     id:45,
     nombre: "The legend of Zelda tears of the kingdom",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 84990,
-    imagen: "/images/nintendo/The legend of Zelda tears of the kingdom switch 2.png",
+    imagen: "public/images/nintendo/The legend of Zelda tears of the kingdom switch 2.png",
   },
   {
     id:46,
     nombre: "Split fiction",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 59990,
-    imagen: "/images/nintendo/Split fiction switch 2.png",
+    imagen: "public/images/nintendo/Split fiction switch 2.png",
   },
   {
     id:47,
     nombre: "Super Mario party jamboree",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 84990,
-    imagen: "/images/nintendo/Super Mario party jamboree switch 2.png",
+    imagen: "public/images/nintendo/Super Mario party jamboree switch 2.png",
   },
   {
     id:48,
     nombre: "Stars wars outlaws",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 79990,
-    imagen: "/images/nintendo/Stars wars outlaws switch 2.png",
+    imagen: "public/images/nintendo/Stars wars outlaws switch 2.png",
   },
   {
     id:49,
     nombre: "Street fighter 6",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 62990,
-    imagen: "/images/nintendo/Street fighter 6 switch 2.png",
+    imagen: "public/images/nintendo/Street fighter 6 switch 2.png",
   },
   {
     id:50,
     nombre: "Yakuza 0 directors cut",
-    descripcion: "Nintendo Switch 2",
+    consola: "Nintendo Switch 2",
     precio: 65990,
-    imagen: "/images/nintendo/Yakuza 0 directors cut switch 2.png",
+    imagen: "public/images/nintendo/Yakuza 0 directors cut switch 2.png",
   }
   ];
 
+  const agregarAlCarrito = (juego) => {
+    const carritoActual = JSON.parse(localStorage.getItem("carrito")) || [];
+    const existente=carritoActual.find((item) => item.id === juego.id);
+
+    if (existente) {
+      existente.cantidad = (existente.cantidad || 1) + 1;
+    } else {
+      carritoActual.push({ ...juego, cantidad: 1 });
+    }
+
+    localStorage.setItem("carrito", JSON.stringify(carritoActual));
+    window.dispatchEvent(new Event("carritoActualizado"));
+    setMensajeVisible(true);
+    setTimeout(() => setMensajeVisible(false), 1500);
+  }
 
   return (
     <div className="container">
 
       {/* Mensaje flotante */}
+      
       {mensajeVisible && (
         <div className="mensaje-carrito">
-          {mensajeTexto}
+          ✅ Añadido al carrito
         </div>
       )}
 
@@ -154,8 +171,11 @@ function Nintendo() {
       <div className="catalogo">
         {juegos.map((juego) => (
           <div key={juego.id} className="juego">
-            <img src={juego.imagen} alt={juego.nombre} />
+            <Link to={`/detalle/${juego.id}`}>
+              <img src={juego.imagen} alt={juego.nombre} />
+            </Link>
             <div className="titulo">{juego.nombre}</div>
+            <div className="consola">{juego.consola}</div>
             <div className="descripcion">{juego.descripcion}</div>
             <div className="precio">
               {juego.precio === 0 ? "Gratis" : "$"}
@@ -163,7 +183,9 @@ function Nintendo() {
             </div>
             <button
               className="boton agregar-carrito"
-              onClick={() => agregarAlCarrito(juego, setMensajeTexto, setMensajeVisible)}
+              onClick={() =>
+                agregarAlCarrito(juego, setMensajeTexto, setMensajeVisible)
+              }
             >
               Agregar al carrito
             </button>

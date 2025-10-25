@@ -1,153 +1,161 @@
 import React from 'react'
-import { obtenerInfoJuego } from '../funciones/funciones';
-import { agregarAlCarrito } from '../funciones/funciones';
 import { Link } from "react-router-dom";
 
 function Play() {
   const [mensajeVisible, setMensajeVisible] = React.useState(false);
-  const [mensajeTexto, setMensajeTexto] = React.useState("");
-
+  const [setMensajeTexto] = React.useState("");
 
   const juegos =[
     {
     id:1,
     nombre: "Metal Gear Solid V: The Phantom Pain ",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 74990,
-    imagen: "/images/play/Metal gear solid Snake eater PS5.png",
+    imagen: "public/images/play/Metal gear solid Snake eater PS5.png",
   },
   {
     id:2,
     nombre: "God of war ragnarok ",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 67990,
-    imagen: "/images/play/God of war ragnarok PS5.png",
+    imagen: "public/images/play/God of war ragnarok PS5.png",
   },
   {
     id:3,
     nombre: "Elden ring ",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 59990,
-    imagen: "/images/play/Elden ring PS5.png",
+    imagen: "public/images/play/Elden ring PS5.png",
   },
   {
     id:4,
     nombre: "The last of us part I ",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 69990,
-    imagen: "/images/play/The last of us part I PS5.png",
+    imagen: "public/images/play/The last of us part I PS5.png",
   },
   {
     id:5,
     nombre: "The last of us part II ",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 59990,
-    imagen: "/images/play/The last of us part II PS5.png",
+    imagen: "public/images/play/The last of us part II PS5.png",
   },
   {
     id:6,
     nombre: "Ghost of Tsushima PS5",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 34990,
-    imagen: "/images/play/Ghost of Tsushima PS5.png",
+    imagen: "public/images/play/Ghost of Tsushima PS5.png",
   },
   {
     id:7,
     nombre: "Resident evil 4",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 39990,
-    imagen: "/images/play/Resident evil 4 PS5.png",
+    imagen: "public/images/play/Resident evil 4 PS5.png",
   },
   {
     id:8,
     nombre: "Final fantasy VII",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 67990,
-    imagen: "/images/play/Final fantasy VII PS5.png",
+    imagen: "public/images/play/Final fantasy VII PS5.png",
   },
   {
     id:9,
     nombre: "final fantasy VII rebirth",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 54990,
-    imagen: "/images/play/final fantasy VII rebirth PS5.png",
+    imagen: "public/images/play/final fantasy VII rebirth PS5.png",
   },
   {
     id:10,
     nombre: "Resident evil 2",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 35990,
-    imagen: "/images/play/Resident evil 2 PS5.png",
+    imagen: "public/images/play/Resident evil 2 PS5.png",
   },
   {
     id:11,
     nombre: "Resident evil 3",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 39990,
-    imagen: "/images/play/Resident evil 3 PS5.png",
+    imagen: "public/images/play/Resident evil 3 PS5.png",
   },
   {
     id:12,
     nombre: "Gran turismo 7",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 75990,
-    imagen: "/images/play/Gran turismo 7 PS5.png",
+    imagen: "public/images/play/Gran turismo 7 PS5.png",
   },
   {
     id:13,
     nombre: "Spider-man 2",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 39990,
-    imagen: "/images/play/Spider-man 2 PS5.png",
+    imagen: "public/images/play/Spider-man 2 PS5.png",
   },
   {
     id:14,
     nombre: "Spider-man Miles Morales",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 34990,
-    imagen: "/images/play/Spider-man Miles Morales PS5.png",
+    imagen: "public/images/play/Spider-man Miles Morales PS5.png",
   },
   {
     id:15,
     nombre: "Silent hill 2",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 59990,
-    imagen: "/images/play/Silent hill 2 PS5.png",
+    imagen: "public/images/play/Silent hill 2 PS5.png",
   },
   {
     id:16,
     nombre: "Resident evil 7 gold edition",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 32990,
-    imagen: "/images/play/Resident evil 7 gold edition PS5.png",
+    imagen: "public/images/play/Resident evil 7 gold edition PS5.png",
   },
   {
     id:17,
     nombre: "Resident evil 8 village",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 34990,
-    imagen: "/images/play/Resident evil 8 village PS5.png",
+    imagen: "public/images/play/Resident evil 8 village PS5.png",
   },
   {
     id:18,
     nombre: "Demons souls",
-    descripcion: "PS5",
+    consola: "PS5",
     precio: 34990,
-    imagen: "/images/play/Demons souls PS5.png",
+    imagen: "public/images/play/Demons souls PS5.png",
   }
   ];
-  
 
-  
-  
+  const agregarAlCarrito = (juego) => {
+    const carritoActual = JSON.parse(localStorage.getItem("carrito")) || [];
+    const existente=carritoActual.find((item) => item.id === juego.id);
 
+    if (existente) {
+      existente.cantidad = (existente.cantidad || 1) + 1;
+    } else {
+      carritoActual.push({ ...juego, cantidad: 1 });
+    }
+
+    localStorage.setItem("carrito", JSON.stringify(carritoActual));
+    window.dispatchEvent(new Event("carritoActualizado"));
+    setMensajeVisible(true);
+    setTimeout(() => setMensajeVisible(false), 1500);
+  }
+  
   return (
     <div className="container">
 
-      {/* Mensaje flotante */}
       {mensajeVisible && (
         <div className="mensaje-carrito">
-          {mensajeTexto}
+          ✅ Añadido al carrito
         </div>
       )}
 
@@ -192,6 +200,7 @@ function Play() {
               <img src={juego.imagen} alt={juego.nombre} />
             </Link>
             <div className="titulo">{juego.nombre}</div>
+            <div className="consola">{juego.consola}</div>
             <div className="descripcion">{juego.descripcion}</div>
             <div className="precio">
               {juego.precio === 0 ? "Gratis" : "$"}

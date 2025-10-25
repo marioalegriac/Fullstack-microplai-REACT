@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-
 function Carrito() {
   const [carrito, setCarrito] = useState([]);
   const [mensajeVisible, setMensajeVisible] = useState(false);
@@ -101,7 +100,8 @@ const actualizarYGuardar = (nuevoCarrito) => {
                 <img src={item.imagen} alt={item.nombre} />
                 <div className="producto-info">
                   <p className="nombre">{item.nombre}</p>
-                  <p className="plataforma">{item.descripcion}</p>
+                  <p className="consola">{item.consola}</p>
+
                 </div>
               </div>
 
