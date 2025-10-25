@@ -304,7 +304,9 @@ export const agregarAlCarrito = (producto, setMensajeTexto, setMensajeVisible) =
 };
 
 
-export function obtenerInfoJuego(nombre) {
+
+
+export function obtenerInfoJuego(id) {
     const juegos = [
         // JUEGOS PS5
         {
@@ -312,28 +314,24 @@ export function obtenerInfoJuego(nombre) {
             nombre: "Metal Gear Solid Snake Eater PS5",
             descripcion:"Descubre el origen del icónico agente militar Snake y empieza a desentrañar la trama de la legendaria saga Metal Gear. En secreto, naciones rivales desarrollan armas que podrían poner en peligro el futuro de la humanidad. En la profundidad de la selva, un soldado de élite debe combinar habilidades de sigilo y supervivencia para infiltrarse entre el enemigo e impedir que un arma de destrucción masiva desate la mayor guerra que el mundo haya visto.",
             video: "https://www.youtube.com/embed/ajh3YHJ6baI",
-            cantidad:1
         },
         {
             id:2,
             nombre: "God of war ragnarok PS5",
             descripcion:"Acompaña a Kratos y Atreus en su lucha contra los dioses nórdicos en una épica secuela llena de acción y emociones. Embárcate en un épico y cordial viaje mientras Kratos y Atreus luchan por aferrarse y soltar. Desde Santa Monica Studio llega la secuela del aclamado por la crítica God of War (2018). Fimbulvetr ya está en camino. Kratos y Atreus deben viajar a cada uno de los nueve reinos en búsqueda de respuestas, mientras que las fuerzas asgardianas se preparan para una batalla profetizada que terminará con el mundo. En el camino explorarán paisajes increíbles y míticos, y se enfrentarán a aterradores enemigos en la forma de dioses nórdicos y monstruos. La amenaza del Ragnarök cada vez está más cerca. Kratos y Atreus deben elegir entre su propia seguridad y la seguridad de los reinos.",
             video: "https://www.youtube.com/embed/vtFhDrMIZjE",
-            cantidad:1
         },
         {
             id:3,
             nombre: "Elden ring PS5",
             descripcion:"Blande el poder del Anillo Elden y conviértete en un Señor Elden en las Tierras Intermedias. La Orden Dorada ha sido destruida. En las Tierras Intermedias, gobernadas por la Reina Marika la Eterna, el Anillo de Elden, la fuente del Árbol de la Muerte, ha sido destrozado. Los descendientes de Marika, todos semidioses, reclamaron los fragmentos del Anillo de Elden, conocidos como las Grandes Runas, y la demencial mancha de su recién descubierta fuerza desencadenó una guerra: La Fragmentación. Una guerra que significó el abandono de la Voluntad Mayor. Y ahora la guía de la gracia llegará a los Mancillados, quienes fueron rechazados por la gracia del oro y exiliados de las Tierras Intermedias.",
             video: "https://www.youtube.com/embed/AKXiKBnzpBQ",
-            cantidad:1
         },
         {
             id:4,
             nombre: "The last of us part I PS5",
             descripcion:"Resiste y sobrevive. Revive el amado juego que lo comenzó todo, reconstruido para la consola PlayStation®5. En una civilización devastada, donde los infectados y los empedernidos sobrevivientes proliferan, Joel, un protagonista cansado, es contratado para rescatar de contrabando a una niña de 14 años llamada Ellie de una zona de cuarentena militar. Sin embargo, lo que comienza como un pequeño trabajo pronto se transforma en una brutal travesía por todo el país.",
             video: "https://www.youtube.com/embed/WxjeV10H1F0",
-            cantidad:1
         },
 
         {
@@ -341,7 +339,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"The last of us part II PS5",
             descripcion:"VIVE LOS CONMOVEDORES VIAJES DE ELLIE Y ABBY EN ESTA REMASTERIZACIÓN PARA PS5. Cinco años después de su peligroso viaje a través de unos Estados Unidos pospandemia, Ellie y Joel logran establecerse en Jackson, Wyoming. Vivir entre una próspera comunidad de sobrevivientes les ha concedido paz y estabilidad, a pesar de la amenaza constante de los infectados y de otros sobrevivientes más desesperados. Cuando un evento violento interrumpe esa paz, Ellie se embarca en un viaje incesante para obtener justicia y llegar a un cierre.",
             video: "https://www.youtube.com/embed/JdE9U9WW_HM",
-            cantidad:1
         },
 
         {
@@ -349,7 +346,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"Ghost of Tsushima PS5",
             descripcion:"Se avecina una tormenta. Descubre la experiencia expandida de Ghost of Tsushima en la Versión del Director. Forja un nuevo camino y emplea tácticas de guerra poco convencionales para liberar Tsushima. Desafía a tus enemigos con tu katana, domina el arco para eliminar las amenazas lejanas, aprende tácticas de sigilo para emboscar a los enemigos y explora una nueva historia en la Isla Iki.",
             video: "https://www.youtube.com/embed/A5gVt028Hww",
-            cantidad:1
         },
 
         {
@@ -357,7 +353,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"Resident evil 4 PS5",
             descripcion:"Una emocionante reinterpretación del revolucionario clásico de terror y acción de Capcom. Seis años después de los eventos de Resident Evil 2, el sobreviviente de Raccoon City, Leon Kennedy, se encuentra apostado en un recóndito pueblo de Europa para investigar la desaparición de la hija del presidente de los Estados Unidos. Lo que descubre allí no se parece a nada que haya enfrentado antes. Todos los aspectos del juego clásico se han actualizado para la generación actual, desde gráficos y controles modernizados, hasta una historia reinventada que puede sorprender incluso a los fanáticos del juego original.",
             video: "https://www.youtube.com/embed/O75Ip4o1bs8",
-            cantidad:1
         },
 
         {
@@ -365,7 +360,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"Final fantasy VII PS5",
             descripcion:"FINAL FANTASY VII REMAKE INTERGRADE es una versión mejorada y expandida del título galardonado y aclamado por la crítica FINAL FANTASY VII REMAKE para PlayStation 5. FINAL FANTASY VII REMAKE INTERGRADE viene en un paquete con FF7R EPISODE INTERmission con Yuffie como personaje principal que introduce un nuevo y excitante arco argumental, y varias adiciones al juego para disfrute de los jugadores.",
             video: "https://www.youtube.com/embed/Ge73iBqc7o8",
-            cantidad:1
         },
         
 
@@ -374,7 +368,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"final fantasy VII rebirth PS5",
             descripcion:"Descubre un vasto mundo brillante en esta entrega independiente dentro del proyecto de remake de Final Fantasy VII. .Final Fantasy VII Rebirth es la segunda entrega dentro del proyecto de remake de Final Fantasy VII, que vuelve a contar la historia del RPG que redefinió el género en tres juegos distintos. Los héroes icónicos Cloud, Barret, Tifa, Aeris y Red XIII han escapado de la distópica ciudad de Midgar y ahora están en busca de Sefirot, el vengativo espadachín del pasado de Cloud a quien se creía muerto. Todos los jugadores pueden disfrutar esta nueva aventura, incluso quienes aún no hayan jugado Final Fantasy VII Remake o el original de PlayStation. Prepárate para deslumbrarte con un mayor nivel de narración cinemática, un combate con mucha acción y la posibilidad de explorar este vasto mundo.",
             video: "https://www.youtube.com/embed/ySktL_lzdCk",
-            cantidad:1
         },
         
 
@@ -383,7 +376,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"Resident evil 2 PS5",
             descripcion:"¿Qué es Resident Evil? Probablemente el género 'horror de supervivencia' no sería tan popular en la actualidad sin Resident Evil. En 1996, Capcom invitó a los jugadores de PlayStation a una mansión laberíntica repleta de zombis caníbales, zombis caninos que rompen ventanas y una variedad de armas bioorgánicas (A.B.O.) que ayudó a que el género 'horror de supervivencia' esté en la mente del público general. Resident Evil combinó el miedo, la acción, la exploración y el manejo de recursos de una manera innovadora que revolucionó un género poco valorado hasta ese momento. El primer juego fue un fenómeno instantáneo, y desde entonces ha dado lugar a numerosas secuelas y spin-offs, así como incursiones en el cine, los cómics y la animación",
             video: "https://www.youtube.com/embed/a-lEnz5QKuM",
-            cantidad:1
         },
         
 
@@ -392,7 +384,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"Resident evil 3 PS5",
             descripcion:"Sé testigo de la caída de Raccoon City. Revive la terrorífica caída de Raccoon City en una impresionante versión alternativa del clásico de terror y supervivencia de 1999. En las horas de pesadilla previas y posteriores a los eventos de Resident Evil 2, solo tú puedes ayudar a la oficial de S.T.A.R.S. Jill Valentine a sobrevivir y escapar de una ciudad asolada por el brote de un virus espeluznante. Pero los zombis no son la única amenaza ahí fuera. Nemesis T-type, la imponente y casi indestructible arma biológica, también está a la caza. Esta monstruosidad brutal utiliza un arsenal de armas de gran potencia para perseguirte sin descanso por Raccoon City; ningún lugar es realmente seguro. Gracias a una presentación de vanguardia y una jugabilidad de acción y aventura renovada, Resident Evil 3 actualiza el inolvidable final de la historia de Raccoon City de un modo explosivo.",
             video: "https://www.youtube.com/embed/BBky2uCGqtM",
-            cantidad:1
         },
         
 
@@ -401,7 +392,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"Gran turismo 7 PS5",
             descripcion:"Gran Turismo 7 combina las mejores funciones del simulador de conducción real. Si eres piloto competitivo o casual, coleccionista, aficionado a las modificaciones, diseñador de apariencias o fotógrafo, encuentra tu camino con una colección impresionante de modos de juego, incluidos los favoritos de los fanáticos, como Campaña de GT, Arcade y Escuela de manejo. Gracias a la reincorporación del legendario modo Simulación de GT, puedes comprar autos, modificarlos y correr con ellos en campañas individuales, a medida que desbloqueas nuevos autos y desafíos. Y si te gusta enfrentarte cabeza a cabeza con otros, perfecciona tus habilidades y compite en el modo Sport. Con más de 420 autos disponibles en Brand Central y la concesionaria de autos usados desde el primer día, Gran Turismo 7 recrea la apariencia y el manejo de vehículos clásicos y superautos vanguardistas con un nivel de detalle sin precedentes. Cada auto tiene una sensación de conducción diferente y única en más de 90 pistas en diferentes condiciones climáticas, incluidas las pistas clásicas de la historia de GT. ",
             video: "https://www.youtube.com/embed/oz-O74SmTSQ",
-            cantidad:1
         },
         
 
@@ -410,7 +400,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"Spider-man 2 PS5",
             descripcion:"SER MEJORES. JUNTOS. Los Spider-Men Peter Parker y Miles Morales regresan para una nueva y emocionante aventura de la aclamada franquicia Marvel's Spider-Man para PS5. Balancéate, salta y utiliza las nuevas alas de telaraña para recorrer toda la ciudad de Nueva York de Marvel. También podrás cambiar rápidamente entre Peter Parker y Miles Morales para vivir diferentes historias y canalizar poderes nuevos y épicos, mientras el emblemático villano Venom amenaza con destruir sus vidas, la ciudad y a todos sus seres queridos.",
             video: "https://www.youtube.com/embed/YeMRixqvjog",
-            cantidad:1
         },
         
 
@@ -419,7 +408,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"Spider-man Miles Morales PS5",
             descripcion:"Experimenta el ascenso de Miles Morales y sé testigo de cómo el nuevo héroe domina nuevos poderes increíbles y explosivos para convertirse en su propia versión de Spider-Man. En la última aventura del universo de Spider-Man de Marvel, el adolescente Miles Morales intenta ajustarse a su nuevo hogar mientras que sigue los pasos de su mentor, Peter Parker, para convertirse en el nuevo Spider-Man. Pero cuando un feroz enfrentamiento por el poder amenaza con destruir su hogar, el aspirante a héroe entiende que un gran poder conlleva una gran responsabilidad. Para salvar a la Nueva York de Marvel, Miles debe adoptar el manto de Spider-Man y volverlo propio.",
             video: "https://www.youtube.com/embed/3wHL2VIaFcs",
-            cantidad:1
         },
         
 
@@ -428,7 +416,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"Silent hill 2 PS5",
             descripcion:"Explora Silent Hill en busca de la esposa fallecida de James en este juego de terror psicológico renovado. Experimenta una obra maestra del terror psicológico, considerado como el mejor juego de la saga, en el hardware más avanzado con elementos visuales y sonidos viscerales. Ponte en el papel de James Sunderland y adéntrate en el pueblo abandonado de Silent Hill en este anticipado remake del clásico de 2001. Atraído a este misterioso lugar por una carta de su esposa, que murió tres años atrás, James se dirige al pueblo en busca de cualquier rastro de su esposa. Entra en un mundo irreal donde encontrarás monstruos retorcidos, el amenazante Pyramid Head y un reparto de personajes aparentemente normales que luchan con su pasado. Mientras James acepta su propio caos, una pregunta persistirá: ¿por qué vino a Silent Hill en realidad?",
             video: "https://www.youtube.com/embed/7f5qac5f3mE",
-            cantidad:1
         },
         
 
@@ -437,7 +424,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"Resident evil 7 gold edition PS5",
             descripcion:"El miedo regresa al hogar. El peligro y la soledad emanan de las decrépitas paredes de una granja abandonada en el sur de los EE.UU. Resident Evil 7 marca un nuevo inicio para el género del survival horror, con un cambio total de modelo con la aterradora e inmersiva perspectiva de jugador vista aislada. Con el revolucionario RE Engine, el terror llega a nuevas cotas, con un fotorrealismo tan impactante que no podrás apartar los ojos. Entra en un espeluznante nuevo mundo de terror y sobrevive",
             video: "https://www.youtube.com/embed/V_Hbr9ITvc0",
-            cantidad:1
         },
         
 
@@ -446,7 +432,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"Resident evil 8 village PS5",
             descripcion:"El miedo te rodea. Vive el horror de supervivencia como nunca antes en el octavo episodio principal de la historiada saga de Resident Evil. Ambientado unos pocos años después de los eventos horribles del Resident Evil 7: Biohazard, aclamado por la crítica, la nueva historia comienza con Ethan Winters y su esposa Mia viviendo tranquilamente en una nueva ubicación, libres de sus pesadillas pasadas. Justo cuando están construyendo su nueva vida juntos, la tragedia les cae encima de nuevo.",
             video: "https://www.youtube.com/embed/ztj8fv6Ttp8",
-            cantidad:1
         },
 
         {
@@ -454,7 +439,6 @@ export function obtenerInfoJuego(nombre) {
             nombre:"Demons souls PS5",
             descripcion:"Completamente rediseñada, esta nueva versión te invita a experimentar una inquietante historia y el combate despiadado de Demon’s Souls™. De PlayStation Studios y Bluepoint Games llega un remake del clásico de PlayStation Demon's Souls. Completamente reconstruido desde cero y mejorado con maestría, este remake presenta los horrores de una tierra de fantasía oscura saturada de niebla a toda una nueva generación de jugadores. Aquellos que enfrentaron sus pruebas y tribulaciones antes, pueden una vez más desafiar a la oscuridad en calidad visual impresionante con desempeño increíble. En su búsqueda de poder, el 12.º rey de Boletaria, el rey Allant canalizó las antiguas artes del arma, despertando a un demonio desde los albores del tiempo mismo, el Antiguo. Con la invocación del Antiguo, una niebla sin color barrió por la tierra, desatando criaturas pesadillescas con hambre de almas humanas. Aquellos a los que les arrancaron las almas perdieron el juicio, y solo les quedó el deseo de atacar a los cuerdos restantes. Ahora, Boletaria queda marginada del mundo exterior y a los caballeros que se atreven a adentrarse en la densa niebla para liberar a la tierra de su aprieto, no los ven nunca más. Como guerrero solitario que desafió a la perniciosa niebla, debes enfrentar el desafío más duro para ganarte el título 'Matademonios' y enviar al Antiguo de vuelta a su letargo.",
             video: "https://www.youtube.com/embed/JiqGi3GMTko",
-            cantidad:1
         },
         // JUEGOS PS5
 
@@ -715,7 +699,7 @@ export function obtenerInfoJuego(nombre) {
         //JUEGOS NINTENDO SWITCH
     ];
 
-    const juego = juegos.find(j => nombre.toLowerCase().includes(j.nombre.toLowerCase()));
+    const juego = juegos.find(j => j.id === id);
     return juego || { descripcion: "Descripción no disponible", video: "" };
 }
 // DETALLES DE LOS JUEGOS

@@ -1,8 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import LogoTienda from "../images/a/Logo Tienda.png"; 
-import CarritoIcon from "../images/a/carrito.png";
-import UsuarioIcon from "../images/a/usuario.png";
 
 export default function Header() {
   return (
@@ -11,7 +8,7 @@ export default function Header() {
 
         <h1>
           <Link to="/">
-            <img src={LogoTienda} alt="Logo" height={150} width={150} />
+            <img src="/images/a/Logo_tienda.png" alt="Logo" height={150} width={150} />
           </Link>
         </h1>
 
@@ -34,19 +31,22 @@ export default function Header() {
             <li>
               <Link to="/Contacto">Contacto</Link>
             </li>
+            <li>
+              <Link to="/Blogs">Blogs</Link>
+            </li>
           </ul>
         </nav>
 
         {/* Icono de carrito */}
         <div className="cart-fixed">
           <Link to="/Carrito">
-            <img src={CarritoIcon} alt="Carrito" />
+            <img src="/images/a/carrito.png" alt="Carrito" />
           </Link>
         </div>
 
         {/* Icono de usuario con dropdown */}
         <div className="user_login">
-          <img src={UsuarioIcon} alt="Usuario" />
+          <img src="/images/a/usuario.png" alt="Usuario" />
           <ul className="user_dropdown">
             <li>
               <Link to="/login">Iniciar sesión</Link>

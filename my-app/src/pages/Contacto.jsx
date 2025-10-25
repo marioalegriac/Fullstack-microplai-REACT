@@ -4,11 +4,11 @@ import emailjs from "@emailjs/browser";
 function Contacto() {
 
   useEffect(() => {
-    emailjs.init("lWDqvGY4Fj9noKYtz"); // Inicializa solo una vez
+    emailjs.init("lWDqvGY4Fj9noKYtz");
   }, []);
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // evita que se recargue la página
+    e.preventDefault();
 
    
 

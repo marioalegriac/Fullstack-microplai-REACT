@@ -10,6 +10,8 @@ import Nintendo from "./pages/Nintendo";
 import Carrito from "./pages/Carrito";
 import Registro from "./pages/Registro";
 import Login from "./pages/Login";
+import Blogs from "./pages/Blogs";
+import Detalle from "./pages/Detalle";
 import "./App.css";
 import "./index.css";
 
@@ -27,6 +29,8 @@ function App() {
         <Route path="/Carrito" element={<Carrito />} />
         <Route path="/Registro" element={<Registro />} />
         <Route path="/Login" element={<Login />} />
+        <Route path="/Blogs" element={<Blogs />} />
+        <Route path="/detalle/:id" element={<Detalle />} /> 
       </Routes>
     </MainLayout>
   );
