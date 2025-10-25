@@ -1,9 +1,10 @@
 import React from 'react'
 import { Link } from "react-router-dom";
+import { agregarAlCarrito } from '../funciones/funciones';
 
 function Xbox() {
   const [mensajeVisible, setMensajeVisible] = React.useState(false);
-  const [setMensajeTexto] = React.useState("");
+  const [mensajeTexto, setMensajeTexto] = React.useState("");
 
 
   const juegos =[
@@ -128,40 +129,29 @@ function Xbox() {
   }
   ];
 
-  const agregarAlCarrito = (juego) => {
-    const carritoActual = JSON.parse(localStorage.getItem("carrito")) || [];
-    const existente=carritoActual.find((item) => item.id === juego.id);
-
-    if (existente) {
-      existente.cantidad = (existente.cantidad || 1) + 1;
-    } else {
-      carritoActual.push({ ...juego, cantidad: 1 });
-    }
-
-    localStorage.setItem("carrito", JSON.stringify(carritoActual));
-    window.dispatchEvent(new Event("carritoActualizado"));
-    setMensajeVisible(true);
-    setTimeout(() => setMensajeVisible(false), 1500);
-  }
 
 
   return (
     <div className="container">
-
+      {/* Mensaje flotante dinámico */}
       {mensajeVisible && (
-        <div className="mensaje-carrito">
-          ✅ Añadido al carrito
-        </div>
+        <div className="mensaje-carrito">{mensajeTexto}</div>
       )}
+
+      <h2>
+        <center>
+          <strong>XBOX</strong>
+        </center>
+      </h2>
 
       <div className="video-texto">
         <iframe
           src="https://www.youtube.com/embed/0tUqIHwHDEc"
-            title="Presentacion Xbox series X"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-        </iframe>
+          title="Presentación Xbox Series X"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
         <p>
           Xbox es la división de videojuegos de Microsoft, fundada en el año 2001 con el lanzamiento de su primera consola, 
         la Xbox original. Desde entonces, Xbox se ha consolidado como una de las principales marcas en la industria del gaming, 
@@ -177,33 +167,34 @@ function Xbox() {
         </p>
       </div>
 
-      <h2 className="titulo-catalogo"><center>Catálogo Xbox</center></h2>
+      <h2 className="titulo-catalogo">
+        <center>Catálogo Xbox</center>
+      </h2>
 
       <div className="catalogo">
-              {juegos.map((juego) => (
-                <div key={juego.id} className="juego">
-                  <Link to={`/detalle/${juego.id}`}>
-                    <img src={juego.imagen} alt={juego.nombre} />
-                  </Link>
-                  <div className="titulo">{juego.nombre}</div>
-                  <div className="consola">{juego.consola}</div>
-                  <div className="descripcion">{juego.descripcion}</div>
-                  <div className="precio">
-                    {juego.precio === 0 ? "Gratis" : "$"}
-                    {juego.precio.toLocaleString("es-CL")}
-                  </div>
-                  <button
-                    className="boton agregar-carrito"
-                    onClick={() =>
-                      agregarAlCarrito(juego, setMensajeTexto, setMensajeVisible)
-                    }
-                  >
-                    Agregar al carrito
-                  </button>
-                </div>
-              ))}
+        {juegos.map((juego) => (
+          <div key={juego.id} className="juego">
+            <Link to={`/detalle/${juego.id}`}>
+              <img src={juego.imagen} alt={juego.nombre} />
+            </Link>
+            <div className="titulo">{juego.nombre}</div>
+            <div className="consola">{juego.consola}</div>
+            <div className="precio">
+              {juego.precio === 0 ? "Gratis" : "$"}
+              {juego.precio.toLocaleString("es-CL")}
             </div>
+            <button
+              className="boton agregar-carrito"
+              onClick={() =>
+                agregarAlCarrito(juego, setMensajeTexto, setMensajeVisible)
+              }
+            >
+              Agregar al carrito
+            </button>
           </div>
+        ))}
+      </div>
+    </div>
   );
 }
 

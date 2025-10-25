@@ -1,9 +1,12 @@
+import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import { moverCarrusel } from "../funciones/funciones.js";
+import { agregarAlCarrito } from "../funciones/funciones.js";
 
 
 function Home() {
   const [mensajeVisible, setMensajeVisible] = useState(false);
+  const [mensajeTexto, setMensajeTexto] = React.useState("");
 
   const productos = [
     {
@@ -80,22 +83,6 @@ function Home() {
   ];
 
   
-  const agregarAlCarrito = (producto) => {
-    const carritoActual = JSON.parse(localStorage.getItem("carrito")) || [];
-    const existente = carritoActual.find((item) => item.id === producto.id);
-
-    if (existente) {
-      existente.cantidad = (existente.cantidad || 1) + 1;
-    } else {
-      carritoActual.push({ ...producto, cantidad: 1 });
-    }
-
-    localStorage.setItem("carrito", JSON.stringify(carritoActual));
-    window.dispatchEvent(new Event("carritoActualizado"));
-
-    setMensajeVisible(true);
-    setTimeout(() => setMensajeVisible(false), 1500);
-  };
 
   return (
     <main>
@@ -128,29 +115,38 @@ function Home() {
             nueva vida y reconstruye cada rincón del mundo.
           </p>
         </div>
+
         <h2>
           <center>
             <strong>Productos destacados</strong>
           </center>
         </h2>
 
-  {mensajeVisible && (
-          <div className="mensaje-carrito">✅ Añadido al carrito</div>
+
+        {mensajeVisible && (
+          <div className="mensaje-carrito">{mensajeTexto}</div>
         )}
 
         <div className="carousel-container">
           <div className="carousel" id="carousel-productos">
             {productos.map((producto) => (
               <div key={producto.id} className="juego">
-                <img src={producto.imagen} alt={producto.nombre} />
+
+                <Link to={`/detalle/${producto.id}`}>
+                  <img src={producto.imagen} alt={producto.nombre} />
+                </Link>
+
                 <div className="titulo">{producto.nombre}</div>
                 <div className="descripcion">{producto.descripcion}</div>
                 <div className="precio">
                   ${producto.precio.toLocaleString("es-CL")}
                 </div>
+
                 <button
                   className="boton agregar-carrito"
-                  onClick={() => agregarAlCarrito(producto)}
+                  onClick={() =>
+                    agregarAlCarrito(producto, setMensajeTexto, setMensajeVisible)
+                  }
                 >
                   Agregar al carrito
                 </button>

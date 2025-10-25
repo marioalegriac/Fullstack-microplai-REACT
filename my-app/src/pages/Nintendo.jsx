@@ -1,10 +1,11 @@
 import React from 'react'
 import { Link } from "react-router-dom";
+import { agregarAlCarrito } from '../funciones/funciones';
 
 
 function Nintendo() {
   const [mensajeVisible, setMensajeVisible] = React.useState(false);
-  const [setMensajeTexto] = React.useState("");
+  const [mensajeTexto, setMensajeTexto] = React.useState("");
 
 
   const juegos =[
@@ -115,43 +116,29 @@ function Nintendo() {
   }
   ];
 
-  const agregarAlCarrito = (juego) => {
-    const carritoActual = JSON.parse(localStorage.getItem("carrito")) || [];
-    const existente=carritoActual.find((item) => item.id === juego.id);
 
-    if (existente) {
-      existente.cantidad = (existente.cantidad || 1) + 1;
-    } else {
-      carritoActual.push({ ...juego, cantidad: 1 });
-    }
-
-    localStorage.setItem("carrito", JSON.stringify(carritoActual));
-    window.dispatchEvent(new Event("carritoActualizado"));
-    setMensajeVisible(true);
-    setTimeout(() => setMensajeVisible(false), 1500);
-  }
 
   return (
     <div className="container">
-
-      {/* Mensaje flotante */}
-      
+      {/* Mensaje flotante dinámico */}
       {mensajeVisible && (
-        <div className="mensaje-carrito">
-          ✅ Añadido al carrito
-        </div>
+        <div className="mensaje-carrito">{mensajeTexto}</div>
       )}
 
-      <h2><center><strong>NINTENDO</strong></center></h2>
-      
-      <div class="video-texto">
-        <iframe 
-            src="https://www.youtube.com/embed/0QeqO0kFz-E"
-            title="Presentacion Nintendo switch 2"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-        </iframe>
+      <h2>
+        <center>
+          <strong>NINTENDO</strong>
+        </center>
+      </h2>
+
+      <div className="video-texto">
+        <iframe
+          src="https://www.youtube.com/embed/0QeqO0kFz-E"
+          title="Presentación Nintendo Switch 2"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
         <p>
           Nintendo es una de las compañías más icónicas y queridas en la historia de los videojuegos. Fundada en Japón en 1889 y 
         centrada en el entretenimiento electrónico desde los años 80, ha sido responsable de crear algunas de las franquicias más populares del mundo, 
@@ -166,7 +153,9 @@ function Nintendo() {
         </p>
       </div>
 
-      <h2 className="titulo-catalogo"><center>Catálogo Nintendo</center></h2>
+      <h2 className="titulo-catalogo">
+        <center>Catálogo Nintendo</center>
+      </h2>
 
       <div className="catalogo">
         {juegos.map((juego) => (
@@ -176,7 +165,6 @@ function Nintendo() {
             </Link>
             <div className="titulo">{juego.nombre}</div>
             <div className="consola">{juego.consola}</div>
-            <div className="descripcion">{juego.descripcion}</div>
             <div className="precio">
               {juego.precio === 0 ? "Gratis" : "$"}
               {juego.precio.toLocaleString("es-CL")}

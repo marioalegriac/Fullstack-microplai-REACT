@@ -1,9 +1,10 @@
 import React from 'react'
 import { Link } from "react-router-dom";
+import { agregarAlCarrito } from '../funciones/funciones';
 
 function Play() {
   const [mensajeVisible, setMensajeVisible] = React.useState(false);
-  const [setMensajeTexto] = React.useState("");
+  const [mensajeTexto, setMensajeTexto] = React.useState("");
 
   const juegos =[
     {
@@ -134,29 +135,13 @@ function Play() {
   }
   ];
 
-  const agregarAlCarrito = (juego) => {
-    const carritoActual = JSON.parse(localStorage.getItem("carrito")) || [];
-    const existente=carritoActual.find((item) => item.id === juego.id);
 
-    if (existente) {
-      existente.cantidad = (existente.cantidad || 1) + 1;
-    } else {
-      carritoActual.push({ ...juego, cantidad: 1 });
-    }
-
-    localStorage.setItem("carrito", JSON.stringify(carritoActual));
-    window.dispatchEvent(new Event("carritoActualizado"));
-    setMensajeVisible(true);
-    setTimeout(() => setMensajeVisible(false), 1500);
-  }
   
   return (
     <div className="container">
-
+      {/* Mensaje flotante */}
       {mensajeVisible && (
-        <div className="mensaje-carrito">
-          ✅ Añadido al carrito
-        </div>
+        <div className="mensaje-carrito">{mensajeTexto}</div>
       )}
 
       <h2><center><strong>PLAYSTATION</strong></center></h2>
@@ -201,7 +186,6 @@ function Play() {
             </Link>
             <div className="titulo">{juego.nombre}</div>
             <div className="consola">{juego.consola}</div>
-            <div className="descripcion">{juego.descripcion}</div>
             <div className="precio">
               {juego.precio === 0 ? "Gratis" : "$"}
               {juego.precio.toLocaleString("es-CL")}

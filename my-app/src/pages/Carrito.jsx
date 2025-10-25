@@ -1,63 +1,45 @@
 import React, { useEffect, useState } from "react";
+import { actualizarCarritoReact, pagarCarritoReact } from "../funciones/funciones";
 
 function Carrito() {
   const [carrito, setCarrito] = useState([]);
   const [mensajeVisible, setMensajeVisible] = useState(false);
+  const [mensajeTexto, setMensajeTexto] = useState("");
 
+ 
   useEffect(() => {
-  const actualizarDesdeStorage = () => {
     const nuevoCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
     setCarrito(nuevoCarrito);
-  };
-
-  actualizarDesdeStorage();
-
-  window.addEventListener("carritoActualizado", actualizarDesdeStorage);
+  }, []);
 
 
-  return () => {
-    window.removeEventListener("carritoActualizado", actualizarDesdeStorage);
-  };
-}, []);
-
-const actualizarYGuardar = (nuevoCarrito) => {
-  setCarrito(nuevoCarrito);
-  localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
-};
-
-
-  
   const aumentarCantidad = (id) => {
-    const actualizado = carrito.map((item) =>
-      item.id === id ? { ...item, cantidad: (item.cantidad || 1) + 1 } : item
-    );
-    actualizarYGuardar(actualizado);
+    actualizarCarritoReact(carrito, setCarrito, setMensajeVisible, setMensajeTexto, id, "aumentar");
   };
 
   const disminuirCantidad = (id) => {
-    const actualizado = carrito.map((item) =>
-      item.id === id && (item.cantidad || 1) > 1
-        ? { ...item, cantidad: item.cantidad - 1 }
-        : item
-    );
-    actualizarYGuardar(actualizado);
+    actualizarCarritoReact(carrito, setCarrito, setMensajeVisible, setMensajeTexto, id, "disminuir");
   };
 
   const eliminarDelCarrito = (id) => {
-    const nuevo = carrito.filter((item) => item.id !== id);
-    actualizarYGuardar(nuevo);
+    actualizarCarritoReact(carrito, setCarrito, setMensajeVisible, setMensajeTexto, id, "eliminar");
   };
 
   const vaciarCarrito = () => {
-    setCarrito([]);
-    localStorage.removeItem("carrito");
+    if (carrito.length === 0) {
+      setMensajeTexto("❌ El carrito ya está vacío");
+    } else {
+      setMensajeTexto("🛒 Carrito vaciado");
+      setCarrito([]);
+      localStorage.removeItem("carrito");
+    }
+    setMensajeVisible(true);
+    setTimeout(() => setMensajeVisible(false), 2000);
   };
 
   const pagarCarrito = () => {
-    setMensajeVisible(true);
-    setCarrito([]);
-    localStorage.removeItem("carrito");
-    setTimeout(() => setMensajeVisible(false), 2000);
+
+    pagarCarritoReact(carrito, setCarrito, setMensajeVisible, setMensajeTexto);
   };
 
   const total = carrito.reduce(
@@ -69,7 +51,7 @@ const actualizarYGuardar = (nuevoCarrito) => {
     <div className="contenedor-carrito">
       {mensajeVisible && (
         <div className="mensaje-carrito">
-          ✅ Compra realizada con éxito
+          {mensajeTexto}
         </div>
       )}
 
@@ -94,55 +76,52 @@ const actualizarYGuardar = (nuevoCarrito) => {
             </p>
           ) : (
             carrito.map((item) => (
-            <div className="carrito-item" key={item.id}>
-              {/* Producto */}
-              <div className="producto">
-                <img src={item.imagen} alt={item.nombre} />
-                <div className="producto-info">
-                  <p className="nombre">{item.nombre}</p>
-                  <p className="consola">{item.consola}</p>
-
+              <div className="carrito-item" key={item.id}>
+                {/* Producto */}
+                <div className="producto">
+                  <img src={item.imagen} alt={item.nombre} />
+                  <div className="producto-info">
+                    <p className="nombre">{item.nombre}</p>
+                    <p className="consola">{item.consola}</p>
+                  </div>
                 </div>
-              </div>
 
                 {/* Cantidad */}
-              <div className="cantidad">
-                <button onClick={() => disminuirCantidad(item.id)}>-</button>
-                <span>{item.cantidad || 1}</span>
-                <button onClick={() => aumentarCantidad(item.id)}>+</button>
-              </div>
+                <div className="cantidad">
+                  <button onClick={() => disminuirCantidad(item.id)}>-</button>
+                  <span>{item.cantidad || 1}</span>
+                  <button onClick={() => aumentarCantidad(item.id)}>+</button>
+                </div>
 
-                 {/* Subtotal */}
-              <div className="subtotal">
-                {(item.precio * (item.cantidad || 1)).toLocaleString("es-CL")} CLP
-              </div>
+                {/* Subtotal */}
+                <div className="subtotal">
+                  {(item.precio * (item.cantidad || 1)).toLocaleString("es-CL")} CLP
+                </div>
 
                 {/* Acciones */}
-              <div className="acciones">
-                <button onClick={() => eliminarDelCarrito(item.id)}>
-                  Eliminar
-                </button>
+                <div className="acciones">
+                  <button onClick={() => eliminarDelCarrito(item.id)}>Eliminar</button>
+                </div>
               </div>
-            </div>
-          ))
-        )}
-      </div>
+            ))
+          )}
+        </div>
 
         {/* Footer */}
-      <div className="carrito-footer">
-        <div className="total">
-          <strong>
-            Total: {total.toLocaleString("es-CL", { style: "currency", currency: "CLP" })}
-          </strong>
-        </div>
+        <div className="carrito-footer">
+          <div className="total">
+            <strong>
+              Total: {total.toLocaleString("es-CL", { style: "currency", currency: "CLP" })}
+            </strong>
+          </div>
 
           <div className="carrito-botones">
-          <button onClick={vaciarCarrito}>Vaciar Carrito</button>
-          <button onClick={pagarCarrito}>Pagar</button>
-        </div>
+            <button onClick={vaciarCarrito}>Vaciar Carrito</button>
+            <button onClick={pagarCarrito}>Pagar</button>
           </div>
         </div>
       </div>
+    </div>
   );
 }
 
