@@ -13,7 +13,7 @@ vi.mock('@emailjs/browser', () => {
     init,
   }
 })
-
+ 
 test('envía el formulario correctamente y muestra el alert', async () => {
   const emailjs = await import('@emailjs/browser')
 

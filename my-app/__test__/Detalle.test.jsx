@@ -6,7 +6,7 @@ import { vi } from 'vitest'
 vi.mock('react-router-dom', () => ({
   useParams: () => ({ id: '1' }),
 }))
-
+ 
 vi.mock('../src/funciones/funciones', () => ({
   obtenerInfoJuego: vi.fn(() => ({
     id: 1,

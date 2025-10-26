@@ -8,7 +8,7 @@ import { obtenerInfoJuego } from "../src/funciones/funciones";
 vi.mock("../src/funciones/funciones", () => ({
   obtenerInfoJuego: vi.fn(),
 }));
-
+ 
 // Mock del evento global
 vi.stubGlobal("dispatchEvent", vi.fn());
 
