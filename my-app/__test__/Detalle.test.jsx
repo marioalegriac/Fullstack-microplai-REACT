@@ -1,3 +1,4 @@
+import React from "react";
 import { render, screen } from '@testing-library/react'
 import Detalle from '../src/pages/Detalle'
 import { test, expect, vi } from "vitest";

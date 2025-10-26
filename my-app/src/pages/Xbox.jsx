@@ -41,7 +41,7 @@ function Xbox() {
     nombre: "Borderlands 4 ",
     consola: "XBOX Series X|S",
     precio: 24990,
-    imagen: "public/images/xbox/Back 4 blood XBOX.png",
+    imagen: "public/images/xbox/Borderlands 4 XBOX.png",
   },
   {
     id:24,

@@ -1,3 +1,4 @@
+import React from "react";
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Contacto from '../src/pages/Contacto';
 import { test, expect, vi } from 'vitest';
