@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import emailjs from "@emailjs/browser";
 
 function Contacto() {
-
   useEffect(() => {
     emailjs.init("lWDqvGY4Fj9noKYtz");
   }, []);
@@ -10,27 +9,27 @@ function Contacto() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-   
-
-    const form = e.target;
-
+    const formData = new FormData(e.target);
     const templateParams = {
-      userEmail: form.user_email.value,
-      subject: form.subject.value,
-      message: form.message.value || `Hemos recibido su solicitud correctamente.
-      Nuestro equipo está revisando su caso y nos pondremos en contacto a la brevedad.
-      Saludos cordiales, Microplai.`,
+      userEmail: formData.get("user_email"),
+      subject: formData.get("subject"),
+      message:
+        formData.get("message") ||
+        `Hemos recibido su solicitud correctamente.
+        Nuestro equipo está revisando su caso y nos pondremos en contacto a la brevedad.
+        Saludos cordiales, Microplai.`,
     };
 
-    emailjs.send("service_2wpcqd9", "template_nsebgim", templateParams)
+    emailjs
+      .send("service_2wpcqd9", "template_nsebgim", templateParams)
       .then(() => {
         alert("Correo enviado con éxito al usuario");
-        form.reset();
+        e.target.reset();
       })
       .catch((error) => {
         alert("Error al enviar: " + JSON.stringify(error));
       });
-  }
+  };
 
   return (
     <div className="Contacto">
@@ -38,7 +37,11 @@ function Contacto() {
         <h2>Contáctanos</h2>
         <p>Completa el formulario y te responderemos lo antes posible.</p>
 
-        <form id="contactForm" onSubmit={handleSubmit}>
+        <form
+          id="contactForm"
+          data-testid="contact-form"
+          onSubmit={handleSubmit}
+        >
           <div className="fields">
             <div className="field half">
               <label htmlFor="user_email">Correo electrónico</label>

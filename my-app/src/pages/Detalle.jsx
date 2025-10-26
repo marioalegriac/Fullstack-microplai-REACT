@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import { obtenerInfoJuego } from "../funciones/funciones";
 
 function Detalle() {
-  const { id } = useParams(); // obtiene el ID desde la URL
-  const juego = obtenerInfoJuego(Number(id)); // busca el juego por id
+  const { id } = useParams();
+  const juego = obtenerInfoJuego(Number(id));
   const [mensajeVisible, setMensajeVisible] = React.useState(false);
   const [setMensajeTexto] = React.useState("");
   
