@@ -1,3 +1,5 @@
+import { supabase } from '../SupaBaseCliente';
+
 //funcion validar el formulario para contacto
 export function valformulario(event) {
   event.preventDefault(); // evita que la página se recargue
@@ -169,36 +171,36 @@ export function validarRegistro(setMensajeTexto, setMensajeVisible) {
 
 
 // FUNCION DEL LOGIN
-export function validarLogin(setMensajeTexto, setMensajeVisible) {
-  const correo = document.getElementById("correo").value.trim();
-  const password = document.getElementById("password").value.trim();
-  const erroresDiv = document.getElementById("erroresLogin");
-  const form = document.getElementById("loginForm");
+// export function validarLogin(setMensajeTexto, setMensajeVisible) {
+//   const correo = document.getElementById("correo").value.trim();
+//   const password = document.getElementById("password").value.trim();
+//   const erroresDiv = document.getElementById("erroresLogin");
+//   const form = document.getElementById("loginForm");
 
-  erroresDiv.textContent = "";
+//   erroresDiv.textContent = "";
 
-  if (!correo || !password) {
-    erroresDiv.textContent = "Por favor, completa todos los campos.";
-    return false;
-  }
+//   if (!correo || !password) {
+//     erroresDiv.textContent = "Por favor, completa todos los campos.";
+//     return false;
+//   }
 
-  const regexCorreo = /^[^\s@]+@(duocuc\.cl|profesor\.duoc\.cl|gmail\.com)$/;
-  if (!regexCorreo.test(correo)) {
-    erroresDiv.textContent = "Error correo electronico incorrecto";
-    return false;
-  }
+//   const regexCorreo = /^[^\s@]+@(duocuc\.cl|profesor\.duoc\.cl|gmail\.com)$/;
+//   if (!regexCorreo.test(correo)) {
+//     erroresDiv.textContent = "Error correo electronico incorrecto";
+//     return false;
+//   }
 
-  if (password.length < 5) {
-    erroresDiv.textContent = "La contraseña debe tener al menos 5 caracteres.";
-    return false;
-  }
+//   if (password.length < 5) {
+//     erroresDiv.textContent = "La contraseña debe tener al menos 5 caracteres.";
+//     return false;
+//   }
 
-  setMensajeTexto("✅ Inicio de sesión exitoso");
-  setMensajeVisible(true);
-  setTimeout(() => setMensajeVisible(false), 3000);
-  form.reset();
-  return true;
-}
+//   setMensajeTexto("✅ Inicio de sesión exitoso");
+//   setMensajeVisible(true);
+//   setTimeout(() => setMensajeVisible(false), 3000);
+//   form.reset();
+//   return true;
+// }
 // FUNCION DEL LOGIN
 
 
@@ -307,7 +309,7 @@ export function obtenerInfoJuego(id) {
             descripcion:"Resiste y sobrevive. Revive el amado juego que lo comenzó todo, reconstruido para la consola PlayStation®5. En una civilización devastada, donde los infectados y los empedernidos sobrevivientes proliferan, Joel, un protagonista cansado, es contratado para rescatar de contrabando a una niña de 14 años llamada Ellie de una zona de cuarentena militar. Sin embargo, lo que comienza como un pequeño trabajo pronto se transforma en una brutal travesía por todo el país.",
             video: "https://www.youtube.com/embed/WxjeV10H1F0",
             precio: 69990,
-            imagen: "src/images/play/The last of us part I PS5.png"
+            imagen: "public/images/play/The last of us part I PS5.png"
         },
 
         {
@@ -818,3 +820,100 @@ export function obtenerInfoJuego(id) {
     return juego || { descripcion: "Descripción no disponible", video: "" };
 }
 // DETALLES DE LOS JUEGOS
+
+
+// FUNCION PARA LA BD
+
+
+
+
+export async function registrarUsuario(setMensajeTexto, setMensajeVisible) {
+    const nombre = document.getElementById('nombre').value.trim();
+    const apellido = document.getElementById('apellido').value.trim();
+    const correo = document.getElementById('correo').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    const errores = [];
+
+    // Validaciones
+    if (nombre.length > 100) errores.push("El nombre no puede tener más de 100 caracteres.");
+    if (apellido.length > 100) errores.push("El apellido no puede tener más de 100 caracteres.");
+    if (!(correo.endsWith('@duocuc.cl') || correo.endsWith('@profesor.duoc.cl') || correo.endsWith('@gmail.com')))
+        errores.push("El correo debe ser @duocuc.cl, @profesor.duoc.cl o @gmail.com");
+    if (password.length < 5 || password.length > 20) errores.push("La contraseña debe tener entre 5 y 20 caracteres.");
+    if (!/[0-9]/.test(password)) errores.push("La contraseña debe tener al menos un número.");
+    if (password !== confirmPassword) errores.push("Las contraseñas no coinciden.");
+
+    const errorContainer = document.getElementById('errores');
+
+    if (errores.length > 0) {
+        errorContainer.innerHTML = errores.join('<br>');
+    } else {
+        errorContainer.innerHTML = "";
+        try {
+            const { error } = await supabase
+                .from('usuarios')
+                .insert([{ nombre, apellido, correo, contrasena: password }]);
+
+            if (error) throw error;
+
+            setMensajeTexto("✅ Registro exitoso");
+            setMensajeVisible(true);
+            setTimeout(() => setMensajeVisible(false), 3000);
+            document.getElementById('registerForm').reset();
+        } catch (err) {
+            setMensajeTexto(`❌ Error al registrar: ${err.message}`);
+            setMensajeVisible(true);
+        }
+    }
+}
+
+
+//Login con la base de datos
+
+
+
+export async function validarLogin(correo, password, setMensajeTexto, setMensajeVisible, setError) {
+  // Limpiamos mensaje de error
+  setError('');
+
+  if (!correo || !password) {
+    setError("Por favor, completa todos los campos.");
+    return false;
+  }
+
+  const regexCorreo = /^[^\s@]+@(duocuc\.cl|profesor\.duoc\.cl|gmail\.com)$/;
+  if (!regexCorreo.test(correo)) {
+    setError("Correo electrónico incorrecto");
+    return false;
+  }
+
+  if (password.length < 5) {
+    setError("La contraseña debe tener al menos 5 caracteres.");
+    return false;
+  }
+
+  // Consulta el usuario en Supabase
+  const { data: user, error } = await supabase
+    .from('usuarios')
+    .select('*')
+    .eq('correo', correo)
+    .single();
+
+  if (error || !user || user.contrasena !== password) {
+    setError("Correo o contraseña incorrectos");
+    return false;
+  }
+
+  // Login exitoso
+  setMensajeTexto("✅ Inicio de sesión exitoso");
+  setMensajeVisible(true);
+  setTimeout(() => setMensajeVisible(false), 3000);
+
+  // Guardar info del usuario logueado
+  localStorage.setItem("usuario", JSON.stringify({ correo: user.correo, id: user.id }));
+
+  return true;
+}
+

@@ -2930,8 +2930,8 @@ body {
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* muestra “...” si el texto es muy largo */
-  max-width: 300px; /* evita que se desborde */
+  text-overflow: ellipsis;
+  max-width: 300px;
 }
 
 .carrito-item .producto p:nth-child(2) {
@@ -2941,9 +2941,9 @@ body {
 }
 
 .carrito-item .producto img {
-  width: 100px; /* antes era 70px */
+  width: 100px;
   height: 100px;
-  object-fit: cover; /* elimina espacios blancos laterales */
+  object-fit: cover;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
@@ -3439,4 +3439,91 @@ h2 {
   }
 }
 
+
+/* ESTILO DEL TOOLTIP */
+
+
+.user_login:hover .tooltip_text {
+  visibility: visible;
+  opacity: 1;
+}
+.user_login:hover .user_dropdown {
+  display: block;
+}
+
+/* Estilos del tooltip */
+.tooltip_text {
+  visibility: hidden;
+  width: 160px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 10;
+  top: -40px;
+  right: 50%;
+  margin-right: -80px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.85em;
+}
+
+/* Dropdown por defecto */
+.user_dropdown {
+  display: none;
+  position: absolute;
+  top: 70px;
+  right: 0;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1),
+              0 0.25em 0.25em 0.1em rgba(0, 0, 0, 0.025);
+  min-width: 12em;
+  padding: 0.75em 0;
+  list-style: none;
+  z-index: 999;
+}
+
+.user_dropdown li {
+  border-top: solid 1px #eee;
+  line-height: 2.5em;
+  padding-left: 0;
+}
+
+.user_dropdown li:first-child {
+  border-top: 0;
+}
+
+.user_dropdown li a,
+.user_dropdown li button {
+  display: block;
+  padding: 0 1.5em;
+  color: #696969;
+  text-decoration: none;
+  font-weight: normal;
+  font-size: 0.9em;
+}
+
+.user_dropdown li a:hover,
+.user_dropdown li button:hover {
+  background: #eee;
+}
+
+
+.user_dropdown li button {
+    all: unset;
+    display: block;
+    padding: 0 1.5em;
+    line-height: 2.5em;
+    color: #696969;
+    font-size: 0.9em;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+.user_dropdown li button:hover {
+    background: #eee;
+}
 

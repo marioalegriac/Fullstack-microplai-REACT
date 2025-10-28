@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import UserLoginTooltip from "./UserLoginTooltip";
 
-export default function Header() {
+export default function Header({ usuario, setUsuario }) {
   return (
     <div id="header-wrapper">
       <header id="header" className="container">
@@ -14,9 +15,7 @@ export default function Header() {
 
         <nav id="nav">
           <ul>
-            <li>
-              <Link to="/">Inicio</Link>
-            </li>
+            <li><Link to="/">Inicio</Link></li>
             <li>
               <Link to="#">Productos</Link>
               <ul>
@@ -25,15 +24,9 @@ export default function Header() {
                 <li><Link to="/Nintendo">Nintendo</Link></li>
               </ul>
             </li>
-            <li>
-              <Link to="/About">Quienes somos</Link>
-            </li>
-            <li>
-              <Link to="/Contacto">Contacto</Link>
-            </li>
-            <li>
-              <Link to="/Blogs">Blogs</Link>
-            </li>
+            <li><Link to="/About">Quienes somos</Link></li>
+            <li><Link to="/Contacto">Contacto</Link></li>
+            <li><Link to="/Blogs">Blogs</Link></li>
           </ul>
         </nav>
 
@@ -44,18 +37,25 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* Icono de usuario con dropdown */}
-        <div className="user_login">
-          <img src="/images/a/usuario.png" alt="Usuario" />
-          <ul className="user_dropdown">
-            <li>
-              <Link to="/login">Iniciar sesión</Link>
-            </li>
-            <li>
-              <Link to="/registro">Registrarse</Link>
-            </li>
-          </ul>
-        </div>
+        {/* Icono de usuario */}
+        {usuario ? (
+
+          <UserLoginTooltip usuario={usuario} setUsuario={setUsuario} />
+        ) : (
+
+          <div className="user_login">
+            <img src="/images/a/usuario.png" alt="Usuario" />
+            <ul className="user_dropdown">
+              <li>
+                <Link to="/login">Iniciar sesión</Link>
+              </li>
+              <li>
+                <Link to="/registro">Registrarse</Link>
+              </li>
+            </ul>
+          </div>
+        )}
+
       </header>
     </div>
   );

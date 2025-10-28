@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "./components/MainLayout";
 import Home from "./pages/Home";
@@ -16,8 +16,12 @@ import "./App.css";
 import "./index.css";
 
 function App() {
+  const [usuario, setUsuario] = useState(() => {
+    return localStorage.getItem('usuario') || null;
+  });
+
   return (
-    <MainLayout>
+    <MainLayout usuario={usuario} setUsuario = {setUsuario}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/Home" element={<Home />} />
@@ -28,7 +32,7 @@ function App() {
         <Route path="/Nintendo" element={<Nintendo />} />
         <Route path="/Carrito" element={<Carrito />} />
         <Route path="/Registro" element={<Registro />} />
-        <Route path="/Login" element={<Login />} />
+        <Route path="/Login" element={<Login setUsuario={setUsuario} />} />
         <Route path="/Blogs" element={<Blogs />} />
         <Route path="/detalle/:id" element={<Detalle />} /> 
       </Routes>

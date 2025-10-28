@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { validarRegistro } from '../funciones/funciones';
+import { registrarUsuario } from '../funciones/funciones';
 
 function Registro() {
   const [mensajeVisible, setMensajeVisible] = useState(false);
   const [mensajeTexto, setMensajeTexto] = useState("");
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    validarRegistro(setMensajeTexto, setMensajeVisible);
-  };
+const handleSubmit = (event) => {
+  event.preventDefault();
+  registrarUsuario(setMensajeTexto, setMensajeVisible);
+};
 
   return (
     <div>

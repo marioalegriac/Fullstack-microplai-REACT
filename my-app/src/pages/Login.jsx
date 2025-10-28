@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
 import { validarLogin } from '../funciones/funciones';
 
-export default function Login() {
-
+export default function Login({ setUsuario }) { // <-- recibimos setUsuario
+  const [correo, setCorreo] = useState('');
+  const [password, setPassword] = useState('');
   const [mensajeVisible, setMensajeVisible] = useState(false);
-  const [mensajeTexto, setMensajeTexto] = useState("");
+  const [mensajeTexto, setMensajeTexto] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
-    validarLogin(setMensajeTexto, setMensajeVisible);
+    const exito = await validarLogin(correo, password, setMensajeTexto, setMensajeVisible, setError);
+    if (exito) {
+      setCorreo('');
+      setPassword('');
+      setUsuario(correo);
+      localStorage.setItem('usuario', correo); // <-- actualizamos el estado global del usuario
+    }
   };
 
   return (
@@ -20,12 +27,10 @@ export default function Login() {
           <p>Ingresa tu correo y contraseña para acceder.</p>
         </header>
 
-        {/* Mensaje flotante */}
-        {mensajeVisible && (
-          <div className="mensaje-flotante">{mensajeTexto}</div>
-        )}
+        {mensajeVisible && <div className="mensaje-flotante">{mensajeTexto}</div>}
+        {error && <div className="mensaje-flotante" style={{ background: '#fdd' }}>{error}</div>}
 
-        <form id="loginForm" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <div className="fields">
             <div className="field">
               <label htmlFor="correo">Correo Electrónico</label>
@@ -34,6 +39,8 @@ export default function Login() {
                 id="correo"
                 name="correo"
                 placeholder="micorreo@gmail.com"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
                 required
               />
             </div>
@@ -44,19 +51,19 @@ export default function Login() {
                 id="password"
                 name="password"
                 placeholder="Ingresa tu contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
           </div>
-
-          <div className="field" id="erroresLogin" style={{ color: "rgb(0,0,0)" }} />
 
           <ul className="actions">
             <li>
               <input type="submit" value="Ingresar" className="primary" />
             </li>
             <li>
-              <input type="reset" value="Borrar" />
+              <input type="reset" value="Borrar" onClick={() => { setCorreo(''); setPassword(''); setError(''); }} />
             </li>
           </ul>
         </form>

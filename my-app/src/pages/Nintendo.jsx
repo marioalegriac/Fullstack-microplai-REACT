@@ -28,7 +28,7 @@ function Nintendo() {
     nombre: "Daemon x machine",
     consola: "Nintendo Switch 2",
     precio: 58990,
-    imagen: "public/images/nintendo/Donkey Kong bananza switch 2.png",
+    imagen: "public/images/nintendo/Daemon x machine switch 2.png",
   },
   {
     id:39,
