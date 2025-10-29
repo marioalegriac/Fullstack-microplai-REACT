@@ -3274,7 +3274,7 @@ body {
     }
 }
 
-/* 🎮 Consolas */
+/*Consolas */
 .play .detalle-info h1#titulo {
     color: #00a2ff;
 }
@@ -3563,4 +3563,34 @@ input[type="reset"]:hover,
 input[type="button"]:hover,
 button:hover {
   opacity: 0.9;
+}
+
+
+.mensaje-admin {
+  position: fixed;
+  top: 20px;
+  left: 30%;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  animation: fadeOut 1.5s forwards;
+  z-index: 1000;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
 }

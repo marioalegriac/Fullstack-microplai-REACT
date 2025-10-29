@@ -1010,13 +1010,84 @@ export async function cargarOrdenes() {
 
 // Agregar administrador
 export async function agregarAdministrador(nuevoAdmin) {
-  if (!nuevoAdmin.nombre || !nuevoAdmin.apellido || !nuevoAdmin.correo || !nuevoAdmin.contrasena) {
+
+  if (
+    !nuevoAdmin.nombre ||
+    !nuevoAdmin.apellido ||
+    !nuevoAdmin.correo ||
+    !nuevoAdmin.contrasena
+  ) {
     throw new Error("Por favor completa todos los campos.");
   }
-  const { error } = await supabase.from("administradores").insert([nuevoAdmin]);
-  if (error) throw new Error(error.message);
+
+  const errores = [];
+
+  const nombre = nuevoAdmin.nombre.trim();
+  const apellido = nuevoAdmin.apellido.trim();
+  const correo = nuevoAdmin.correo.trim().toLowerCase();
+  const contrasena = nuevoAdmin.contrasena;
+
+
+  if (nombre.length > 100)
+    errores.push("El nombre no puede tener más de 100 caracteres.");
+  if (apellido.length > 100)
+    errores.push("El apellido no puede tener más de 100 caracteres.");
+  if (
+    !(
+      correo.endsWith("@duocuc.cl") ||
+      correo.endsWith("@profesor.duoc.cl") ||
+      correo.endsWith("@gmail.com")
+    )
+  )
+    errores.push(
+      "El correo debe ser @duocuc.cl, @profesor.duoc.cl o @gmail.com."
+    );
+  if (contrasena.length < 5 || contrasena.length > 20)
+    errores.push("La contraseña debe tener entre 5 y 20 caracteres.");
+  if (!/[0-9]/.test(contrasena))
+    errores.push("La contraseña debe tener al menos un número.");
+
+  if (errores.length > 0) {
+    throw new Error(errores.join("\n"));
+  }
+
+
+  const { data: usuarioExiste, error: errorUsuarios } = await supabase
+    .from("usuarios")
+    .select("correo")
+    .eq("correo", correo)
+    .maybeSingle();
+
+  if (errorUsuarios) throw new Error("Error al verificar usuarios.");
+
+  if (usuarioExiste) {
+    throw new Error("Este correo ya está registrado como usuario.");
+  }
+
+
+  const { data: adminExiste, error: errorAdmins } = await supabase
+    .from("administradores")
+    .select("correo")
+    .eq("correo", correo)
+    .maybeSingle();
+
+  if (errorAdmins) throw new Error("Error al verificar administradores.");
+
+  if (adminExiste) {
+    throw new Error("Este correo ya está registrado como administrador.");
+  }
+
+
+  const { error: insertError } = await supabase
+    .from("administradores")
+    .insert([{ nombre, apellido, correo, contrasena }]);
+
+  if (insertError) throw new Error(insertError.message);
+
   return true;
 }
+
+
 
 // Eliminar usuario
 export async function eliminarUsuario(id) {
@@ -1076,7 +1147,7 @@ export function generarReporte(tipo, usuarios, admins, ordenes) {
 
     const hojaOrdenes = XLSX.utils.json_to_sheet(filas);
 
-    // Ajustar ancho de columnas automáticamente
+
     const columnas = Object.keys(filas[0] || {}).map(key => ({ wch: Math.max(key.length, 15) }));
     hojaOrdenes['!cols'] = columnas;
 
@@ -1129,44 +1200,28 @@ export async function confirmarCompraCarrito({
   setMensajeVisible,
   setMensajeTexto,
   setMostrarFormulario,
+  datosFormulario,
 }) {
   if (!carrito || carrito.length === 0) {
     mostrarMensaje(setMensajeTexto, setMensajeVisible, "❌ No se puede pagar, el carrito está vacío");
     return;
   }
 
-  const nombre = document.getElementById("nombre").value.trim();
-  const apellido = document.getElementById("apellido").value.trim();
-  const correo = document.getElementById("correo").value.trim();
-  const direccion = document.getElementById("direccion").value.trim();
-  const indicaciones = document.getElementById("indicaciones").value.trim();
+  const { nombre, apellido, correo, direccion, indicaciones } = datosFormulario;
 
   if (!nombre || !apellido || !correo || !direccion) {
     mostrarMensaje(setMensajeTexto, setMensajeVisible, "⚠️ Por favor, completa todos los campos obligatorios");
     return;
   }
 
-  // Obtener el ID del usuario a partir del correo (correo único)
-  const { data: usuarioData, error: usuarioError } = await supabase
-    .from("usuarios")
-    .select("id")
-    .eq("correo", correo)
-    .single();
-
-  if (usuarioError || !usuarioData) {
-    mostrarMensaje(setMensajeTexto, setMensajeVisible, "❌ Usuario no encontrado");
-    return;
-  }
-
   try {
-    // 1️⃣ Calcular total sin decimales
+
     const totalCompra = Math.round(carrito.reduce((acc, item) => acc + item.precio * (item.cantidad || 1), 0));
 
-    // 2️⃣ Insertar la compra
+    // Insertar la compra directamente, sin validar usuario en la DB
     const { data: compraData, error: compraError } = await supabase
       .from("compras")
       .insert([{
-        usuario_id: usuarioData.id,
         nombre,
         apellido,
         correo,
@@ -1179,7 +1234,7 @@ export async function confirmarCompraCarrito({
 
     if (compraError) throw compraError;
 
-    // 3️⃣ Insertar los detalles de la compra
+    // Insertar los detalles de la compra
     const detalles = carrito.map(item => ({
       compra_id: compraData.id,
       producto_nombre: item.nombre,

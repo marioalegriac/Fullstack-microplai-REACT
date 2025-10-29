@@ -18,7 +18,9 @@ function Administrador() {
     contrasena: "",
   });
 
-  // Cargar datos al montar el componente
+  const [mensajeTexto, setMensajeTexto] = useState("");
+  const [mensajeVisible, setMensajeVisible] = useState(false);
+
   useEffect(() => {
     cargarTodo();
   }, []);
@@ -33,14 +35,20 @@ function Administrador() {
     }
   };
 
+  const mostrarMensaje = (texto) => {
+    setMensajeTexto(texto);
+    setMensajeVisible(true);
+    setTimeout(() => setMensajeVisible(false), 2000);
+  };
+
   const handleAgregarAdmin = async () => {
     try {
       await agregarAdministrador(nuevoAdmin);
-      alert("Administrador agregado correctamente!");
+      mostrarMensaje("✅ Administrador agregado correctamente");
       setNuevoAdmin({ nombre: "", apellido: "", correo: "", contrasena: "" });
       setAdmins(await cargarAdmins());
     } catch (error) {
-      alert(error.message);
+      mostrarMensaje("❌ " + error.message);
     }
   };
 
@@ -48,14 +56,13 @@ function Administrador() {
     if (!window.confirm("¿Seguro que deseas eliminar este usuario?")) return;
     try {
       await eliminarUsuario(id);
-      alert("Usuario eliminado correctamente.");
+      mostrarMensaje("✅ Usuario eliminado correctamente");
       setUsuarios(await cargarUsuarios());
     } catch (error) {
-      console.error(error.message);
+      mostrarMensaje("❌ " + error.message);
     }
   };
 
-  // Estilo de botones para reportes
   const buttonStyle = {
     padding: "10px 20px",
     borderRadius: "8px",
@@ -70,6 +77,11 @@ function Administrador() {
   return (
     <section className="form-container">
       <h2>Panel de Administración</h2>
+
+      {/* 🟢 Mensaje flotante tipo carrito */}
+      {mensajeVisible && (
+        <div className="mensaje-admin">{mensajeTexto}</div>
+      )}
 
       {/* Usuarios */}
       <div className="admin-section">
@@ -90,7 +102,9 @@ function Administrador() {
                 <td>{u.apellido}</td>
                 <td>{u.correo}</td>
                 <td>
-                  <button onClick={() => handleEliminarUsuario(u.id)}>Eliminar</button>
+                  <button onClick={() => handleEliminarUsuario(u.id)}>
+                    Eliminar
+                  </button>
                 </td>
               </tr>
             ))}
@@ -124,37 +138,57 @@ function Administrador() {
         <input
           placeholder="Nombre"
           value={nuevoAdmin.nombre}
-          onChange={(e) => setNuevoAdmin({ ...nuevoAdmin, nombre: e.target.value })}
+          onChange={(e) =>
+            setNuevoAdmin({ ...nuevoAdmin, nombre: e.target.value })
+          }
         />
         <input
           placeholder="Apellido"
           value={nuevoAdmin.apellido}
-          onChange={(e) => setNuevoAdmin({ ...nuevoAdmin, apellido: e.target.value })}
+          onChange={(e) =>
+            setNuevoAdmin({ ...nuevoAdmin, apellido: e.target.value })
+          }
         />
         <input
           placeholder="Correo"
           value={nuevoAdmin.correo}
-          onChange={(e) => setNuevoAdmin({ ...nuevoAdmin, correo: e.target.value })}
+          onChange={(e) =>
+            setNuevoAdmin({ ...nuevoAdmin, correo: e.target.value })
+          }
         />
         <input
           placeholder="Contraseña"
+          type="password"
           value={nuevoAdmin.contrasena}
-          onChange={(e) => setNuevoAdmin({ ...nuevoAdmin, contrasena: e.target.value })}
+          onChange={(e) =>
+            setNuevoAdmin({ ...nuevoAdmin, contrasena: e.target.value })
+          }
         />
+
         <button onClick={handleAgregarAdmin}>Agregar Admin</button>
       </div>
 
       {/* Reportes */}
-      <div className="admin-section" style={{
-        padding: "20px",
-        borderRadius: "10px",
-        backgroundColor: "#f9f9f9",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-        marginTop: "20px",
-        textAlign: "center"
-      }}>
+      <div
+        className="admin-section"
+        style={{
+          padding: "20px",
+          borderRadius: "10px",
+          backgroundColor: "#f9f9f9",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+          marginTop: "20px",
+          textAlign: "center",
+        }}
+      >
         <h3 style={{ marginBottom: "15px" }}>Generar Reportes</h3>
-        <div style={{ display: "flex", justifyContent: "center", gap: "15px", flexWrap: "wrap" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "15px",
+            flexWrap: "wrap",
+          }}
+        >
           <button
             onClick={() => generarReporte("usuarios", usuarios, admins, ordenes)}
             style={buttonStyle}
