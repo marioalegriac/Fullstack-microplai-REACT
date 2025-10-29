@@ -27,6 +27,12 @@ export default function Header({ usuario, setUsuario }) {
             <li><Link to="/About">Quienes somos</Link></li>
             <li><Link to="/Contacto">Contacto</Link></li>
             <li><Link to="/Blogs">Blogs</Link></li>
+            
+            {usuario?.tipo === "admin" && (
+              <li>
+                <Link to="/Administrador">Administracion</Link>
+              </li>
+            )}
           </ul>
         </nav>
 
@@ -39,10 +45,8 @@ export default function Header({ usuario, setUsuario }) {
 
         {/* Icono de usuario */}
         {usuario ? (
-
           <UserLoginTooltip usuario={usuario} setUsuario={setUsuario} />
         ) : (
-
           <div className="user_login">
             <img src="/images/a/usuario.png" alt="Usuario" />
             <ul className="user_dropdown">

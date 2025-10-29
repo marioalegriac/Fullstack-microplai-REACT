@@ -1,4 +1,5 @@
 import { supabase } from '../SupaBaseCliente';
+import * as XLSX from "xlsx";
 
 //funcion validar el formulario para contacto
 export function valformulario(event) {
@@ -170,38 +171,6 @@ export function validarRegistro(setMensajeTexto, setMensajeVisible) {
     }
 
 
-// FUNCION DEL LOGIN
-// export function validarLogin(setMensajeTexto, setMensajeVisible) {
-//   const correo = document.getElementById("correo").value.trim();
-//   const password = document.getElementById("password").value.trim();
-//   const erroresDiv = document.getElementById("erroresLogin");
-//   const form = document.getElementById("loginForm");
-
-//   erroresDiv.textContent = "";
-
-//   if (!correo || !password) {
-//     erroresDiv.textContent = "Por favor, completa todos los campos.";
-//     return false;
-//   }
-
-//   const regexCorreo = /^[^\s@]+@(duocuc\.cl|profesor\.duoc\.cl|gmail\.com)$/;
-//   if (!regexCorreo.test(correo)) {
-//     erroresDiv.textContent = "Error correo electronico incorrecto";
-//     return false;
-//   }
-
-//   if (password.length < 5) {
-//     erroresDiv.textContent = "La contraseña debe tener al menos 5 caracteres.";
-//     return false;
-//   }
-
-//   setMensajeTexto("✅ Inicio de sesión exitoso");
-//   setMensajeVisible(true);
-//   setTimeout(() => setMensajeVisible(false), 3000);
-//   form.reset();
-//   return true;
-// }
-// FUNCION DEL LOGIN
 
 
 // FUNCION DEL CARRUSEL
@@ -828,45 +797,80 @@ export function obtenerInfoJuego(id) {
 
 
 export async function registrarUsuario(setMensajeTexto, setMensajeVisible) {
-    const nombre = document.getElementById('nombre').value.trim();
-    const apellido = document.getElementById('apellido').value.trim();
-    const correo = document.getElementById('correo').value.trim();
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
+  const nombre = document.getElementById('nombre').value.trim();
+  const apellido = document.getElementById('apellido').value.trim();
+  const correo = document.getElementById('correo').value.trim();
+  const password = document.getElementById('password').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
 
-    const errores = [];
+  const errores = [];
 
-    // Validaciones
-    if (nombre.length > 100) errores.push("El nombre no puede tener más de 100 caracteres.");
-    if (apellido.length > 100) errores.push("El apellido no puede tener más de 100 caracteres.");
-    if (!(correo.endsWith('@duocuc.cl') || correo.endsWith('@profesor.duoc.cl') || correo.endsWith('@gmail.com')))
-        errores.push("El correo debe ser @duocuc.cl, @profesor.duoc.cl o @gmail.com");
-    if (password.length < 5 || password.length > 20) errores.push("La contraseña debe tener entre 5 y 20 caracteres.");
-    if (!/[0-9]/.test(password)) errores.push("La contraseña debe tener al menos un número.");
-    if (password !== confirmPassword) errores.push("Las contraseñas no coinciden.");
+  // --- Validaciones
+  if (nombre.length > 100) errores.push("El nombre no puede tener más de 100 caracteres.");
+  if (apellido.length > 100) errores.push("El apellido no puede tener más de 100 caracteres.");
+  if (!(correo.endsWith('@duocuc.cl') || correo.endsWith('@profesor.duoc.cl') || correo.endsWith('@gmail.com')))
+    errores.push("El correo debe ser @duocuc.cl, @profesor.duoc.cl o @gmail.com");
+  if (password.length < 5 || password.length > 20)
+    errores.push("La contraseña debe tener entre 5 y 20 caracteres.");
+  if (!/[0-9]/.test(password))
+    errores.push("La contraseña debe tener al menos un número.");
+  if (password !== confirmPassword)
+    errores.push("Las contraseñas no coinciden.");
 
-    const errorContainer = document.getElementById('errores');
+  const errorContainer = document.getElementById('errores');
 
-    if (errores.length > 0) {
-        errorContainer.innerHTML = errores.join('<br>');
-    } else {
-        errorContainer.innerHTML = "";
-        try {
-            const { error } = await supabase
-                .from('usuarios')
-                .insert([{ nombre, apellido, correo, contrasena: password }]);
+  if (errores.length > 0) {
+    errorContainer.innerHTML = errores.join('<br>');
+    return;
+  }
 
-            if (error) throw error;
+  errorContainer.innerHTML = "";
 
-            setMensajeTexto("✅ Registro exitoso");
-            setMensajeVisible(true);
-            setTimeout(() => setMensajeVisible(false), 3000);
-            document.getElementById('registerForm').reset();
-        } catch (err) {
-            setMensajeTexto(`❌ Error al registrar: ${err.message}`);
-            setMensajeVisible(true);
-        }
+  try {
+
+    const { data: userExists, error: userError } = await supabase
+      .from('usuarios')
+      .select('correo')
+      .eq('correo', correo)
+      .maybeSingle();
+
+
+    const { data: adminExists, error: adminError } = await supabase
+      .from('administradores')
+      .select('correo')
+      .eq('correo', correo)
+      .maybeSingle();
+
+    if (userError || adminError) throw new Error("Error consultando la base de datos");
+
+
+    if (userExists || adminExists) {
+      setMensajeTexto("❌ Error correo ya registrado");
+      setMensajeVisible(true);
+      setTimeout(() => setMensajeVisible(false), 3000);
+      return;
     }
+
+
+    const { error } = await supabase
+      .from('usuarios')
+      .insert([{ nombre, apellido, correo, contrasena: password }]);
+
+    if (error) throw error;
+
+
+    setMensajeTexto("✅ Registro exitoso");
+    setMensajeVisible(true);
+    setTimeout(() => setMensajeVisible(false), 3000);
+
+    document.getElementById('registerForm').reset();
+
+  } catch (err) {
+    console.error(err);
+    setMensajeTexto("❌ Error correo ya registrado");
+    setMensajeVisible(true);
+    setTimeout(() => setMensajeVisible(false), 3000);
+  }
 }
 
 
@@ -875,7 +879,7 @@ export async function registrarUsuario(setMensajeTexto, setMensajeVisible) {
 
 
 export async function validarLogin(correo, password, setMensajeTexto, setMensajeVisible, setError) {
-  // Limpiamos mensaje de error
+
   setError('');
 
   if (!correo || !password) {
@@ -894,26 +898,311 @@ export async function validarLogin(correo, password, setMensajeTexto, setMensaje
     return false;
   }
 
-  // Consulta el usuario en Supabase
-  const { data: user, error } = await supabase
+
+  const { data: user, error: userError } = await supabase
     .from('usuarios')
     .select('*')
     .eq('correo', correo)
     .single();
 
-  if (error || !user || user.contrasena !== password) {
+
+  let userFound = user;
+  let tipoUsuario = 'usuario';
+
+  if ((!userFound || userError) && !userFound?.id) {
+    const { data: admin, error: adminError } = await supabase
+      .from('administradores')
+      .select('*')
+      .eq('correo', correo)
+      .single();
+
+    if (admin && !adminError) {
+      userFound = admin;
+      tipoUsuario = 'admin';
+    }
+  }
+
+
+  if (!userFound || userFound.contrasena !== password) {
     setError("Correo o contraseña incorrectos");
     return false;
   }
 
-  // Login exitoso
+
   setMensajeTexto("✅ Inicio de sesión exitoso");
   setMensajeVisible(true);
   setTimeout(() => setMensajeVisible(false), 3000);
 
-  // Guardar info del usuario logueado
-  localStorage.setItem("usuario", JSON.stringify({ correo: user.correo, id: user.id }));
+
+  localStorage.setItem(
+    "usuario",
+    JSON.stringify({
+      correo: userFound.correo,
+      id: userFound.id,
+      tipo: tipoUsuario,
+      nombre: userFound.nombre,
+      apellido: userFound.apellido
+    })
+  );
 
   return true;
 }
 
+
+
+
+
+// PANEL ADMIN
+
+// Usuarios
+export async function cargarUsuarios() {
+  const { data, error } = await supabase.from("usuarios").select("*");
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+// Administradores
+export async function cargarAdmins() {
+  const { data, error } = await supabase.from("administradores").select("*");
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+// Órdenes con detalle de productos
+export async function cargarOrdenes() {
+  try {
+    const { data, error } = await supabase
+      .from("compras")
+      .select(`
+        id,
+        nombre,
+        apellido,
+        correo,
+        total,
+        fecha,
+        compra_detalle (
+          producto_nombre,
+          consola,
+          cantidad,
+          precio
+        )
+      `)
+      .order('fecha', { ascending: false });
+
+    if (error) throw error;
+
+    // Mapear para que cada orden tenga productos
+    return data.map((compra) => ({
+      id: compra.id,
+      nombre: compra.nombre,
+      apellido: compra.apellido,
+      correo: compra.correo,
+      total: compra.total,
+      fecha: compra.fecha,
+      productos: compra.compra_detalle || []
+    }));
+
+  } catch (err) {
+    console.error("Error cargando ordenes:", err.message);
+    return [];
+  }
+}
+
+// Agregar administrador
+export async function agregarAdministrador(nuevoAdmin) {
+  if (!nuevoAdmin.nombre || !nuevoAdmin.apellido || !nuevoAdmin.correo || !nuevoAdmin.contrasena) {
+    throw new Error("Por favor completa todos los campos.");
+  }
+  const { error } = await supabase.from("administradores").insert([nuevoAdmin]);
+  if (error) throw new Error(error.message);
+  return true;
+}
+
+// Eliminar usuario
+export async function eliminarUsuario(id) {
+  const { error } = await supabase.from("usuarios").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+  return true;
+}
+
+// Generar reportes
+export function generarReporte(tipo, usuarios, admins, ordenes) {
+  const libro = XLSX.utils.book_new();
+
+  if (tipo === "usuarios") {
+    const hojaUsuarios = XLSX.utils.json_to_sheet(usuarios);
+    XLSX.utils.book_append_sheet(libro, hojaUsuarios, "Usuarios");
+  }
+
+  if (tipo === "admins") {
+    const hojaAdmins = XLSX.utils.json_to_sheet(admins);
+    XLSX.utils.book_append_sheet(libro, hojaAdmins, "Administradores");
+  }
+
+  if (tipo === "compras") {
+    const filas = [];
+
+    ordenes.forEach((o) => {
+      if (Array.isArray(o.productos) && o.productos.length > 0) {
+        o.productos.forEach((p) => {
+          filas.push({
+            CompraID: o.id,
+            Comprador: `${o.nombre} ${o.apellido}`,
+            Correo: o.correo,
+            Producto: p.producto_nombre,
+            Consola: p.consola,
+            Cantidad: p.cantidad,
+            Precio: p.precio,
+            Subtotal: (p.precio * p.cantidad),
+            TotalCompra: o.total,
+            Fecha: o.fecha ? new Date(o.fecha).toLocaleDateString() : "",
+          });
+        });
+      } else {
+        filas.push({
+          CompraID: o.id,
+          Comprador: `${o.nombre} ${o.apellido}`,
+          Correo: o.correo,
+          Producto: "Sin productos",
+          Consola: "",
+          Cantidad: 0,
+          Precio: 0,
+          Subtotal: 0,
+          TotalCompra: o.total.toFixed(2),
+          Fecha: o.fecha ? new Date(o.fecha).toLocaleDateString() : "",
+        });
+      }
+    });
+
+    const hojaOrdenes = XLSX.utils.json_to_sheet(filas);
+
+    // Ajustar ancho de columnas automáticamente
+    const columnas = Object.keys(filas[0] || {}).map(key => ({ wch: Math.max(key.length, 15) }));
+    hojaOrdenes['!cols'] = columnas;
+
+    XLSX.utils.book_append_sheet(libro, hojaOrdenes, "Compras");
+  }
+
+  XLSX.writeFile(libro, "reporte_microplai.xlsx");
+}
+
+
+
+
+//llena campos del carrito si estas logeado
+
+export function llenarDatos() {
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  if (usuario) {
+    return {
+      nombre: usuario.nombre || "",
+      apellido: usuario.apellido || "",
+      correo: usuario.correo || "",
+      direccion: "",
+      indicacion: ""
+    };
+  }
+  return {
+    nombre: "",
+    apellido: "",
+    correo: "",
+    direccion: "",
+    indicacion: ""
+  };
+}
+
+
+//asdad
+
+export function mostrarMensaje(setMensajeTexto, setMensajeVisible, texto, duracion = 2000) {
+  setMensajeTexto(texto);
+  setMensajeVisible(true);
+  setTimeout(() => setMensajeVisible(false), duracion);
+}
+
+
+// validar carrito
+
+export async function confirmarCompraCarrito({
+  carrito,
+  setCarrito,
+  setMensajeVisible,
+  setMensajeTexto,
+  setMostrarFormulario,
+}) {
+  if (!carrito || carrito.length === 0) {
+    mostrarMensaje(setMensajeTexto, setMensajeVisible, "❌ No se puede pagar, el carrito está vacío");
+    return;
+  }
+
+  const nombre = document.getElementById("nombre").value.trim();
+  const apellido = document.getElementById("apellido").value.trim();
+  const correo = document.getElementById("correo").value.trim();
+  const direccion = document.getElementById("direccion").value.trim();
+  const indicaciones = document.getElementById("indicaciones").value.trim();
+
+  if (!nombre || !apellido || !correo || !direccion) {
+    mostrarMensaje(setMensajeTexto, setMensajeVisible, "⚠️ Por favor, completa todos los campos obligatorios");
+    return;
+  }
+
+  // Obtener el ID del usuario a partir del correo (correo único)
+  const { data: usuarioData, error: usuarioError } = await supabase
+    .from("usuarios")
+    .select("id")
+    .eq("correo", correo)
+    .single();
+
+  if (usuarioError || !usuarioData) {
+    mostrarMensaje(setMensajeTexto, setMensajeVisible, "❌ Usuario no encontrado");
+    return;
+  }
+
+  try {
+    // 1️⃣ Calcular total sin decimales
+    const totalCompra = Math.round(carrito.reduce((acc, item) => acc + item.precio * (item.cantidad || 1), 0));
+
+    // 2️⃣ Insertar la compra
+    const { data: compraData, error: compraError } = await supabase
+      .from("compras")
+      .insert([{
+        usuario_id: usuarioData.id,
+        nombre,
+        apellido,
+        correo,
+        total: totalCompra,
+        direccion,
+        indicaciones
+      }])
+      .select()
+      .single();
+
+    if (compraError) throw compraError;
+
+    // 3️⃣ Insertar los detalles de la compra
+    const detalles = carrito.map(item => ({
+      compra_id: compraData.id,
+      producto_nombre: item.nombre,
+      consola: item.consola,
+      cantidad: item.cantidad || 1,
+      precio: item.precio
+    }));
+
+    const { error: detalleError } = await supabase
+      .from("compra_detalle")
+      .insert(detalles);
+
+    if (detalleError) throw detalleError;
+
+    // 4️⃣ Limpiar carrito
+    setCarrito([]);
+    localStorage.removeItem("carrito");
+
+    mostrarMensaje(setMensajeTexto, setMensajeVisible, "✅ Compra confirmada correctamente");
+    setMostrarFormulario(false);
+
+  } catch (error) {
+    console.error(error);
+    mostrarMensaje(setMensajeTexto, setMensajeVisible, "❌ Error al registrar la compra");
+  }
+}

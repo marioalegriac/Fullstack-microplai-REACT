@@ -12,16 +12,18 @@ import Registro from "./pages/Registro";
 import Login from "./pages/Login";
 import Blogs from "./pages/Blogs";
 import Detalle from "./pages/Detalle";
+import Administrador from "./pages/Administrador";
 import "./App.css";
 import "./index.css";
 
 function App() {
   const [usuario, setUsuario] = useState(() => {
-    return localStorage.getItem('usuario') || null;
+    const stored = localStorage.getItem("usuario");
+    return stored ? JSON.parse(stored) : null;
   });
 
   return (
-    <MainLayout usuario={usuario} setUsuario = {setUsuario}>
+    <MainLayout usuario={usuario} setUsuario={setUsuario}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/Home" element={<Home />} />
@@ -34,7 +36,13 @@ function App() {
         <Route path="/Registro" element={<Registro />} />
         <Route path="/Login" element={<Login setUsuario={setUsuario} />} />
         <Route path="/Blogs" element={<Blogs />} />
-        <Route path="/detalle/:id" element={<Detalle />} /> 
+        <Route path="/detalle/:id" element={<Detalle />} />
+
+        {/* Ruta admin protegida */}
+        <Route
+          path="/Administrador"
+          element={usuario?.tipo === "admin" ? <Administrador /> : <Home />}
+        />
       </Routes>
     </MainLayout>
   );

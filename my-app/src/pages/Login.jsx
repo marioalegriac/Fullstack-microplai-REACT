@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
 import { validarLogin } from '../funciones/funciones';
+import { useNavigate } from 'react-router-dom'; // 👈 Import necesario
 
-export default function Login({ setUsuario }) { // <-- recibimos setUsuario
+export default function Login({ setUsuario }) { 
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
   const [mensajeVisible, setMensajeVisible] = useState(false);
   const [mensajeTexto, setMensajeTexto] = useState('');
   const [error, setError] = useState('');
 
+  const navigate = useNavigate(); // 👈 Hook para navegación
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const exito = await validarLogin(correo, password, setMensajeTexto, setMensajeVisible, setError);
+
     if (exito) {
       setCorreo('');
       setPassword('');
-      setUsuario(correo);
-      localStorage.setItem('usuario', correo); // <-- actualizamos el estado global del usuario
+
+      const usuarioLogueado = JSON.parse(localStorage.getItem("usuario"));
+      setUsuario(usuarioLogueado); 
+
+      // 🔹 Redirigir automáticamente al panel admin solo si es admin
+      if (usuarioLogueado.tipo === "admin") {
+        navigate("/Administrador");
+      }
     }
   };
 
