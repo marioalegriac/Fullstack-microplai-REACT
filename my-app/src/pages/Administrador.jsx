@@ -14,6 +14,7 @@ import EditarUsuarioModal from "../components/EditarUsuarioModal";
 import EditarProductoModal from "../components/EditarProductoModal";
 import CrearUsuarioModal from "../components/CrearUsuarioModal";
 import CrearProductoModal from "../components/CrearProductoModal";
+import VerProductosModal from "../components/VerProductosModal";
 
 export default function Administrador() {
   const [usuarios, setUsuarios] = useState([]);

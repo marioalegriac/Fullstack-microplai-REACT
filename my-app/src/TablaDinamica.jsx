@@ -14,18 +14,20 @@ function TablaDinamica({
 }) {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
-  // Estado modal Ver Más
+  // ✅ Modal Ver Más
   const [modalVisible, setModalVisible] = useState(false);
   const [productosSeleccionados, setProductosSeleccionados] = useState([]);
 
   const filasPorPagina = 10;
   const [pagina, setPagina] = useState(1);
 
+  // ✅ Seteo automático del orden inicial por tipo de tabla
   useEffect(() => {
     if (sortDefault) setSortConfig(sortDefault);
     setPagina(1);
   }, [sortDefault, tipo]);
 
+  // ✅ ORDEN POR CLICK EN HEADERS
   const handleSort = (key) => {
     const col = columns.find((c) => c.key === key);
     if (!col || !col.sortable) return;
@@ -37,7 +39,13 @@ function TablaDinamica({
     );
   };
 
-  // FILTRADO + ORDENAMIENTO
+  // ✅ FLECHAS DE ORDEN
+  const getSortIndicator = (key) => {
+    if (sortConfig.key !== key) return "↕";
+    return sortConfig.direction === "asc" ? "↑" : "↓";
+  };
+
+  // ✅ FILTRO + ORDEN
   const resultadoFinal = useMemo(() => {
     if (!Array.isArray(data)) return [];
 
@@ -98,18 +106,13 @@ function TablaDinamica({
     return resultado;
   }, [data, filtroTexto, sortConfig, columns]);
 
+  // ✅ PAGINACIÓN
   const datosPaginados = useMemo(() => {
     const inicio = (pagina - 1) * filasPorPagina;
     return resultadoFinal.slice(inicio, inicio + filasPorPagina);
   }, [resultadoFinal, pagina]);
 
   const totalFilas = resultadoFinal.length;
-
-  const getSortIndicator = (key) => {
-    if (sortConfig.key !== key) return "↕";
-    return sortConfig.direction === "asc" ? "↑" : "↓";
-  };
-
   const mostrarAcciones = !!(onGestionar || onEliminar);
 
   return (
@@ -140,11 +143,14 @@ function TablaDinamica({
               >
                 {col.label}{" "}
                 {col.sortable && (
-                  <span className="orden-indicador">{getSortIndicator(col.key)}</span>
+                  <span className="orden-indicador">
+                    {getSortIndicator(col.key)}
+                  </span>
                 )}
               </th>
             ))}
 
+            {tipo === "compras" && <th>Ver</th>}
             {mostrarAcciones && <th>Acciones</th>}
           </tr>
         </thead>
@@ -152,7 +158,7 @@ function TablaDinamica({
         <tbody>
           {datosPaginados.length === 0 ? (
             <tr>
-              <td colSpan={columns.length + (mostrarAcciones ? 1 : 0)}>
+              <td colSpan={columns.length + 2}>
                 No hay datos para mostrar.
               </td>
             </tr>
@@ -160,27 +166,23 @@ function TablaDinamica({
             datosPaginados.map((fila) => (
               <tr key={fila.id}>
                 {columns.map((col) => (
-                  <td key={col.key}>
-                    {/* 🔥 VER MÁS SOLO EN COMPRAS */}
-                    {tipo === "compras" && col.key === "productos" ? (
-                      <>
-                        {fila[col.key].slice(0, 40)}…
-                        <button
-                          className="btn-gestionar"
-                          style={{ marginLeft: "8px" }}
-                          onClick={() => {
-                            setProductosSeleccionados(fila.productosRaw || []);
-                            setModalVisible(true);
-                          }}
-                        >
-                          Ver más
-                        </button>
-                      </>
-                    ) : (
-                      fila[col.key]
-                    )}
-                  </td>
+                  <td key={col.key}>{fila[col.key]}</td>
                 ))}
+
+                {/* ✅ COLUMNA VER MÁS */}
+                {tipo === "compras" && (
+                  <td>
+                    <button
+                      className="btn-gestionar"
+                      onClick={() => {
+                        setProductosSeleccionados(fila.productosRaw || []);
+                        setModalVisible(true);
+                      }}
+                    >
+                      Ver más
+                    </button>
+                  </td>
+                )}
 
                 {mostrarAcciones && (
                   <td>
@@ -225,7 +227,7 @@ function TablaDinamica({
         </button>
       </div>
 
-      {/* MODAL DE PRODUCTOS */}
+      {/* ✅ MODAL VER PRODUCTOS */}
       <VerProductosModal
         visible={modalVisible}
         productos={productosSeleccionados}
