@@ -1,14 +1,11 @@
 import React from "react";
 import "../App.css";
 
-
 function About() {
   return (
-    <section
-      className="quienes-somos"
-      aria-labelledby="titulo-quienes-somos"
-    >
+    <section className="quienes-somos" aria-labelledby="titulo-quienes-somos">
       <h2 id="titulo-quienes-somos">¿Quiénes somos?</h2>
+
       <p>
         Nuestra tienda nació con la idea de acercar productos de calidad a todas las
         personas, creando un espacio donde comprar no sea solo una transacción, sino
@@ -16,30 +13,26 @@ function About() {
         motivación fue clara: ofrecer una alternativa distinta, donde la atención
         personalizada, la transparencia y la confianza fueran el sello que nos
         diferenciara.
-      </p>
-      <p>
+        <br /><br />
         Con el paso del tiempo, hemos aprendido de cada experiencia y de cada
         cliente que nos ha acompañado en este camino. Gracias a esa confianza,
         logramos crecer y consolidarnos, adaptándonos a las nuevas tendencias y a
         las necesidades de un mercado que cambia constantemente. Para nosotros,
         escuchar y mejorar es tan importante como vender, porque entendemos que una
         buena relación con quienes nos eligen es la base de todo.
-      </p>
-      <p>
+        <br /><br />
         Nuestra visión va más allá de ser una tienda: queremos construir una
         comunidad donde la responsabilidad, la honestidad y el respeto sean valores
         que se sientan en cada interacción. Nos esforzamos por seleccionar
         cuidadosamente nuestros productos y por ofrecer un servicio en el que cada
         detalle refleje dedicación y compromiso.
-      </p>
-      <p>
+        <br /><br />
         Creemos firmemente que la innovación es clave para seguir avanzando. Por
         eso, trabajamos día a día en implementar nuevas ideas que hagan tu
         experiencia más cómoda, sencilla y segura, ya sea que nos visites de manera
         presencial o en línea. Cada pequeño cambio que aplicamos tiene como objetivo
         mejorar tu satisfacción y mantenernos a la altura de lo que mereces.
-      </p>
-      <p>
+        <br /><br />
         Hoy continuamos con la misma pasión y energía que nos impulsó en nuestros
         inicios, convencidos de que lo más valioso son las personas que confían en
         nosotros. Nuestra historia no sería posible sin ti, y es precisamente esa

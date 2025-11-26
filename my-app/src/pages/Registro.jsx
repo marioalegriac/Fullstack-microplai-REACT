@@ -1,96 +1,110 @@
-import React, { useState } from 'react';
-import { registrarUsuario } from '../funciones/funciones';
+import React, { useState } from "react";
+import { registrarUsuario } from "../funciones/funciones";
 
-function Registro() {
+export default function Registro() {
+
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [correo, setCorreo] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [mensajeVisible, setMensajeVisible] = useState(false);
   const [mensajeTexto, setMensajeTexto] = useState("");
+  const [errores, setErrores] = useState([]);
 
-const handleSubmit = (event) => {
-  event.preventDefault();
-  registrarUsuario(setMensajeTexto, setMensajeVisible);
-};
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    setErrores([]);
+    setMensajeVisible(false);
+    setMensajeTexto("");
+
+    await registrarUsuario(
+      { nombre, apellido, correo, password, confirmPassword },
+      setMensajeTexto,
+      setMensajeVisible,
+      setErrores
+    );
+
+    // Si salió OK
+    if (mensajeTexto.includes("✅")) {
+      setNombre("");
+      setApellido("");
+      setCorreo("");
+      setPassword("");
+      setConfirmPassword("");
+    }
+  };
 
   return (
-    <div>
-      <section className="form-container">
-        <header>
-          <h2>Registro de Usuario</h2>
-          <p>Completa el formulario para registrarte.</p>
-        </header>
+    <section className="auth-container">
+      <h2>Registro de Usuario</h2>
 
-        {/* Mensaje flotante */}
-        {mensajeVisible && (
-          <div className="mensaje-flotante">{mensajeTexto}</div>
-        )}
+      {mensajeVisible && (
+        <div className="auth-message auth-success">
+          {mensajeTexto}
+        </div>
+      )}
 
-        <form id="registerForm" onSubmit={handleSubmit}>
-          <div className="fields">
-            <div className="field">
-              <label htmlFor="nombre">Nombre</label>
-              <input
-                type="text"
-                id="nombre"
-                name="nombre"
-                placeholder="Ingresa tu nombre.."
-                required
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="apellido">Apellido</label>
-              <input
-                type="text"
-                id="apellido"
-                name="apellido"
-                placeholder="Ingresa tu apellido.."
-                required
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="correo">Correo Electrónico</label>
-              <input
-                type="email"
-                id="correo"
-                name="correo"
-                placeholder="micorre@gmail.com.."
-                required
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="password">Contraseña</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="La contraseña debe tener minimo 5 caracteres y maximo 20.."
-                required
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                placeholder="Confirmar contraseña"
-                required
-              />
-            </div>
-          </div>
+      {errores.length > 0 && (
+        <div className="auth-message auth-error">
+          {errores.map((e, i) => (
+            <div key={i}>{e}</div>
+          ))}
+        </div>
+      )}
 
-          <div className="field" id="errores" style={{ color: "rgb(0, 0, 0)" }} />
+      <form onSubmit={handleSubmit}>
+        
+        <input
+          type="text"
+          placeholder="Nombre"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          required
+        />
 
-          <ul className="actions">
-            <li>
-              <input type="submit" value="Registrarse" className="primary" />
-            </li>
-            <li>
-              <input type="reset" value="Borrar" />
-            </li>
-          </ul>
-        </form>
-      </section>
-    </div>
+        <input
+          type="text"
+          placeholder="Apellido"
+          value={apellido}
+          onChange={(e) => setApellido(e.target.value)}
+          required
+        />
+
+        <input
+          type="email"
+          placeholder="Correo electrónico"
+          value={correo}
+          onChange={(e) => setCorreo(e.target.value)}
+          required
+        />
+
+        <input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
+        <input
+          type="password"
+          placeholder="Confirmar contraseña"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+        />
+
+        <button type="submit" className="auth-btn">
+          Registrarse
+        </button>
+      </form>
+
+      <p className="auth-bottom-text">
+        ¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí</a>
+      </p>
+    </section>
   );
 }
-
-export default Registro;

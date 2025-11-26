@@ -1,7 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import emailjs from "@emailjs/browser";
 
 function Contacto() {
+  const [toastVisible, setToastVisible] = useState(false);
+
   useEffect(() => {
     emailjs.init("lWDqvGY4Fj9noKYtz");
   }, []);
@@ -9,12 +11,13 @@ function Contacto() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const formData = new FormData(e.target);
+    const form = new FormData(e.target);
+
     const templateParams = {
-      userEmail: formData.get("user_email"),
-      subject: formData.get("subject"),
+      userEmail: form.get("user_email"),
+      subject: form.get("subject"),
       message:
-        formData.get("message") ||
+        form.get("message") ||
         `Hemos recibido su solicitud correctamente.
         Nuestro equipo está revisando su caso y nos pondremos en contacto a la brevedad.
         Saludos cordiales, Microplai.`,
@@ -23,7 +26,12 @@ function Contacto() {
     emailjs
       .send("service_2wpcqd9", "template_nsebgim", templateParams)
       .then(() => {
-        alert("Correo enviado con éxito al usuario");
+        setToastVisible(true);
+
+        setTimeout(() => {
+          setToastVisible(false);
+        }, 2600);
+
         e.target.reset();
       })
       .catch((error) => {
@@ -32,59 +40,82 @@ function Contacto() {
   };
 
   return (
-    <div className="Contacto">
-      <section id="contact-form" className="inner form-container">
-        <h2>Contáctanos</h2>
-        <p>Completa el formulario y te responderemos lo antes posible.</p>
+    <main className="contact-pro">
 
-        <form
-          id="contactForm"
-          data-testid="contact-form"
-          onSubmit={handleSubmit}
-        >
-          <div className="fields">
-            <div className="field half">
-              <label htmlFor="user_email">Correo electrónico</label>
-              <input
-                type="email"
-                name="user_email"
-                id="user_email"
-                placeholder="Ingrese su correo..."
-                required
-              />
-            </div>
-            <div className="field half">
-              <label htmlFor="subject">Asunto</label>
-              <input
-                type="text"
-                name="subject"
-                id="subject"
-                placeholder="Asunto..."
-                required
-              />
-            </div>
-            <div className="field">
-              <label htmlFor="message">Mensaje</label>
-              <textarea
-                name="message"
-                id="message"
-                rows={5}
-                placeholder="Escribe tu mensaje aquí..."
-                required
-              />
-            </div>
-          </div>
-          <ul className="actions">
-            <li>
-              <input type="submit" value="Enviar" className="primary" />
-            </li>
-            <li>
-              <input type="reset" value="Borrar" />
-            </li>
-          </ul>
-        </form>
-      </section>
-    </div>
+      {/* 🔥 TOAST PROFESIONAL */}
+      {toastVisible && (
+        <div className="toast-success">
+          <span className="toast-icon">✔</span>
+          Mensaje enviado correctamente
+        </div>
+      )}
+
+      {/* 🔷 TÍTULO */}
+      <h1 className="contact-title">Contáctanos</h1>
+      <p className="contact-sub">
+        Déjanos tu mensaje y te responderemos lo antes posible.
+      </p>
+
+      {/* 📩 FORMULARIO PROFESIONAL */}
+      <form className="contact-form-pro" onSubmit={handleSubmit}>
+        
+        {/* EMAIL */}
+        <div className="input-box">
+          <span className="input-icon"></span>
+          <input
+            type="email"
+            name="user_email"
+            id="user_email"
+            placeholder="Tu correo electrónico"
+            required
+          />
+        </div>
+
+        {/* ASUNTO */}
+        <div className="input-box">
+          <span className="input-icon"></span>
+          <input
+            type="text"
+            name="subject"
+            id="subject"
+            placeholder="Asunto del mensaje"
+            required
+          />
+        </div>
+
+        {/* MENSAJE */}
+        <div className="input-box">
+          <span className="input-icon icon-top"></span>
+          <textarea
+            name="message"
+            id="message"
+            rows={5}
+            placeholder="Escribe aquí tu mensaje..."
+            required
+          ></textarea>
+        </div>
+
+        {/* BOTONES */}
+        <div className="contact-buttons">
+          <button type="submit" className="btn-enviar">
+            Enviar mensaje
+          </button>
+
+          <button type="reset" className="btn-reset">
+            Borrar
+          </button>
+        </div>
+      </form>
+
+      {/* ℹ INFORMACIÓN EXTRA */}
+      <div className="contact-info-pro">
+        <h3>Información adicional</h3>
+        <p><strong> Dirección:</strong> Santiago, Chile</p>
+        <p><strong> Teléfono:</strong> +56 9 1234 5678</p>
+        <p><strong> Horario:</strong> Lunes a Viernes — 9:00 a 18:00</p>
+        <p><strong> Soporte:</strong> soporte@microplai.cl</p>
+      </div>
+    </main>
   );
 }
 

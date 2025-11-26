@@ -56,7 +56,7 @@ function Carrito() {
       setMensajeVisible,
       setMensajeTexto,
       setMostrarFormulario,
-      datosFormulario // <-- ahora pasamos los datos del formulario
+      datosFormulario
     });
   };
 

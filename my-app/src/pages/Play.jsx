@@ -1,197 +1,114 @@
-import React from 'react'
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from "react-router-dom";
 import { agregarAlCarrito } from '../funciones/funciones';
 
 function Play() {
-  const [mensajeVisible, setMensajeVisible] = React.useState(false);
-  const [mensajeTexto, setMensajeTexto] = React.useState("");
+  const [juegos, setJuegos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
 
-  const juegos =[
-    {
-    id:1,
-    nombre: "Metal Gear Solid V: The Phantom Pain ",
-    consola: "PS5",
-    precio: 74990,
-    imagen: "public/images/play/Metal gear solid Snake eater PS5.png",
-  },
-  {
-    id:2,
-    nombre: "God of war ragnarok ",
-    consola: "PS5",
-    precio: 67990,
-    imagen: "public/images/play/God of war ragnarok PS5.png",
-  },
-  {
-    id:3,
-    nombre: "Elden ring ",
-    consola: "PS5",
-    precio: 59990,
-    imagen: "public/images/play/Elden ring PS5.png",
-  },
-  {
-    id:4,
-    nombre: "The last of us part I ",
-    consola: "PS5",
-    precio: 69990,
-    imagen: "public/images/play/The last of us part I PS5.png",
-  },
-  {
-    id:5,
-    nombre: "The last of us part II ",
-    consola: "PS5",
-    precio: 59990,
-    imagen: "public/images/play/The last of us part II PS5.png",
-  },
-  {
-    id:6,
-    nombre: "Ghost of Tsushima PS5",
-    consola: "PS5",
-    precio: 34990,
-    imagen: "public/images/play/Ghost of Tsushima PS5.png",
-  },
-  {
-    id:7,
-    nombre: "Resident evil 4",
-    consola: "PS5",
-    precio: 39990,
-    imagen: "public/images/play/Resident evil 4 PS5.png",
-  },
-  {
-    id:8,
-    nombre: "Final fantasy VII",
-    consola: "PS5",
-    precio: 67990,
-    imagen: "public/images/play/Final fantasy VII PS5.png",
-  },
-  {
-    id:9,
-    nombre: "final fantasy VII rebirth",
-    consola: "PS5",
-    precio: 54990,
-    imagen: "public/images/play/final fantasy VII rebirth PS5.png",
-  },
-  {
-    id:10,
-    nombre: "Resident evil 2",
-    consola: "PS5",
-    precio: 35990,
-    imagen: "public/images/play/Resident evil 2 PS5.png",
-  },
-  {
-    id:11,
-    nombre: "Resident evil 3",
-    consola: "PS5",
-    precio: 39990,
-    imagen: "public/images/play/Resident evil 3 PS5.png",
-  },
-  {
-    id:12,
-    nombre: "Gran turismo 7",
-    consola: "PS5",
-    precio: 75990,
-    imagen: "public/images/play/Gran turismo 7 PS5.png",
-  },
-  {
-    id:13,
-    nombre: "Spider-man 2",
-    consola: "PS5",
-    precio: 39990,
-    imagen: "public/images/play/Spider-man 2 PS5.png",
-  },
-  {
-    id:14,
-    nombre: "Spider-man Miles Morales",
-    consola: "PS5",
-    precio: 34990,
-    imagen: "public/images/play/Spider-man Miles Morales PS5.png",
-  },
-  {
-    id:15,
-    nombre: "Silent hill 2",
-    consola: "PS5",
-    precio: 59990,
-    imagen: "public/images/play/Silent hill 2 PS5.png",
-  },
-  {
-    id:16,
-    nombre: "Resident evil 7 gold edition",
-    consola: "PS5",
-    precio: 32990,
-    imagen: "public/images/play/Resident evil 7 gold edition PS5.png",
-  },
-  {
-    id:17,
-    nombre: "Resident evil 8 village",
-    consola: "PS5",
-    precio: 34990,
-    imagen: "public/images/play/Resident evil 8 village PS5.png",
-  },
-  {
-    id:18,
-    nombre: "Demons souls",
-    consola: "PS5",
-    precio: 34990,
-    imagen: "public/images/play/Demons souls PS5.png",
-  }
-  ];
+  const [mensajeVisible, setMensajeVisible] = useState(false);
+  const [mensajeTexto, setMensajeTexto] = useState("");
 
+  // ===========================
+  // PAGINACIÓN
+  // ===========================
+  const [pagina, setPagina] = useState(1);
+  const itemsPorPagina = 12;
 
-  
+  const totalPaginas = Math.ceil(juegos.length / itemsPorPagina);
+
+  const juegosVisibles = useMemo(() => {
+    const inicio = (pagina - 1) * itemsPorPagina;
+    const fin = inicio + itemsPorPagina;
+    return juegos.slice(inicio, fin);
+  }, [pagina, juegos]);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/productos")
+      .then((res) => res.json())
+      .then((data) => {
+        const filtrados = data.filter(j => j.consola === "PS5");
+        setJuegos(filtrados);
+        setCargando(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("No se pudo cargar el catálogo");
+        setCargando(false);
+      });
+  }, []);
+
+  if (cargando) return <h2>Cargando catálogo...</h2>;
+  if (error) return <h2>{error}</h2>;
+
   return (
-    <div className="container">
-      {/* Mensaje flotante */}
+    <main className="catalog-page">
+
       {mensajeVisible && (
         <div className="mensaje-carrito">{mensajeTexto}</div>
       )}
 
-      <h2><center><strong>PLAYSTATION</strong></center></h2>
+      {/* TÍTULO */}
+      <h2 className="console-title">PLAYSTATION</h2>
 
-      <div className="video-texto">
-        <iframe
-          src="https://www.youtube.com/embed/RkC0l4iekYo"
-          title="Presentacion PS5"
-          frameBorder={0}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
-        <p>
-          El meo corte es una de las marcas más reconocidas y exitosas en el mundo de
-          los videojuegos. Lanzada por Sony Interactive Entertainment en 1994,
-          revolucionó la industria con su enfoque en gráficos avanzados,
-          experiencias inmersivas y una amplia biblioteca de juegos exclusivos. A lo
-          largo de los años, PlayStation ha establecido un legado con consolas que
-          han marcado generaciones, ofreciendo entretenimiento para millones de
-          jugadores alrededor del mundo. La marca se ha destacado por su innovación
-          constante y su compromiso con la calidad, integrando nuevas tecnologías
-          como realidad virtual, servicios online robustos y una comunidad global
-          que sigue creciendo. Desde la PlayStation original hasta la PlayStation 4,
-          Sony ha sabido combinar potencia, diseño y juegos que definen la cultura
-          gamer. La PlayStation 5 representa el último avance en esta saga, con un
-          hardware de última generación que ofrece gráficos en 4K, tiempos de carga
-          ultrarrápidos gracias a su SSD personalizado y un nuevo control DualSense
-          que mejora la inmersión con su respuesta háptica y gatillos adaptativos.
-          Esta consola no solo potencia la experiencia de juego, sino que también
-          sigue ampliando el ecosistema PlayStation con nuevas funcionalidades y
-          exclusivos que emocionan a los fans.
-        </p>
+      {/* ========================
+           VIDEO + TEXTO
+         ======================== */}
+      <div className="console-section">
+
+        <div className="console-video">
+          <iframe
+            src="https://www.youtube.com/embed/RkC0l4iekYo"
+            title="Presentacion PS5"
+            allowFullScreen
+          ></iframe>
+        </div>
+
+        {/* TEXTO --------------- */}
+        <div className="console-text">
+          <p>
+            Sony es una de las marcas más reconocidas y exitosas en el mundo de
+            los videojuegos. Lanzada por Sony Interactive Entertainment en 1994,
+            revolucionó la industria con su enfoque en gráficos avanzados,
+            experiencias inmersivas y una amplia biblioteca de juegos exclusivos.
+            <br /><br />
+            A lo largo de los años, PlayStation ha establecido un legado con consolas
+            que han marcado generaciones, ofreciendo entretenimiento para millones
+            de jugadores alrededor del mundo.
+            <br /><br />
+            La PlayStation 5 representa el último avance en esta saga, con un hardware
+            de nueva generación, gráficos en 4K, SSD ultrarrápido y el innovador
+            DualSense, que redefine la experiencia del jugador.
+          </p>
+        </div>
+
       </div>
 
-      <h2 className="titulo-catalogo"><center>Catálogo PlayStation</center></h2>
+      {/* TÍTULO CATÁLOGO */}
+      <h2 className="console-title">Catálogo PlayStation</h2>
 
-      <div className="catalogo">
-        {juegos.map((juego) => (
-          <div key={juego.id} className="juego">
+      {/* GRID DEL CATÁLOGO */}
+      <div className="catalogo-page">
+        {juegosVisibles.map((juego) => (
+          <div key={juego.id} className="catalog-item">
+
             <Link to={`/detalle/${juego.id}`}>
-              <img src={juego.imagen} alt={juego.nombre} />
+              <img className="catalog-img" src={juego.imagen} alt={juego.nombre} />
             </Link>
-            <div className="titulo">{juego.nombre}</div>
-            <div className="consola">{juego.consola}</div>
-            <div className="precio">
-              {juego.precio === 0 ? "Gratis" : "$"}
-              {juego.precio.toLocaleString("es-CL")}
+
+            <div className="catalog-title">{juego.nombre}</div>
+
+            <div className="catalog-desc">
+              {juego.descripcion?.substring(0, 80)}...
             </div>
+
+            <div className="catalog-price">
+              {juego.precio.toLocaleString("es-CL")} CLP
+            </div>
+
             <button
-              className="boton agregar-carrito"
+              className="catalog-add-btn"
               onClick={() =>
                 agregarAlCarrito(juego, setMensajeTexto, setMensajeVisible)
               }
@@ -201,7 +118,31 @@ function Play() {
           </div>
         ))}
       </div>
-    </div>
+
+      {/* PAGINACIÓN */}
+      {totalPaginas > 1 && (
+        <div className="catalogo-paginacion">
+          <button
+            disabled={pagina === 1}
+            onClick={() => setPagina(pagina - 1)}
+          >
+            ◀ Anterior
+          </button>
+
+          <span>
+            Página {pagina} de {totalPaginas}
+          </span>
+
+          <button
+            disabled={pagina === totalPaginas}
+            onClick={() => setPagina(pagina + 1)}
+          >
+            Siguiente ▶
+          </button>
+        </div>
+      )}
+
+    </main>
   );
 }
 

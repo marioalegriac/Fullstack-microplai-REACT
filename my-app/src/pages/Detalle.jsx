@@ -1,85 +1,121 @@
-import React from "react";
-import { useParams } from "react-router-dom";
-import { obtenerInfoJuego } from "../funciones/funciones";
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
 
 function Detalle() {
   const { id } = useParams();
-  const juego = obtenerInfoJuego(Number(id));
-  const [mensajeVisible, setMensajeVisible] = React.useState(false);
-  const [setMensajeTexto] = React.useState("");
-  
 
-  if (!juego) {
-    return <p>Juego no encontrado</p>;
-  }
+  const [juego, setJuego] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+  const [mensajeVisible, setMensajeVisible] = useState(false);
+
+  useEffect(() => {
+    fetch(`http://localhost:8080/api/productos/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Juego no encontrado");
+        return res.json();
+      })
+      .then((data) => {
+        setJuego(data);
+        setCargando(false);
+      })
+      .catch(() => {
+        setError("No se pudo cargar la información del juego");
+        setCargando(false);
+      });
+  }, [id]);
 
   const agregarAlCarrito = (juego) => {
-    const carritoActual = JSON.parse(localStorage.getItem("carrito")) || [];
-    const existente=carritoActual.find((item) => item.id === juego.id);
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+    const existe = carrito.find((item) => item.id === juego.id);
 
-    if (existente) {
-      existente.cantidad = (existente.cantidad || 1) + 1;
+    if (existe) {
+      existe.cantidad = (existe.cantidad || 1) + 1;
     } else {
-      carritoActual.push({ ...juego, cantidad: 1 });
+      carrito.push({ ...juego, cantidad: 1 });
     }
 
-    localStorage.setItem("carrito", JSON.stringify(carritoActual));
+    localStorage.setItem("carrito", JSON.stringify(carrito));
     window.dispatchEvent(new Event("carritoActualizado"));
+
     setMensajeVisible(true);
     setTimeout(() => setMensajeVisible(false), 1500);
-  }
+  };
+
+  if (cargando) return <h2>Cargando información...</h2>;
+  if (error) return <h2>{error}</h2>;
+  if (!juego) return <h2>Juego no encontrado</h2>;
 
   return (
-    
-    <div className="detalle-container">
+    <main className="detalle-page">
 
-        {mensajeVisible && (
-        <div className="mensaje-carrito">
-          ✅ Añadido al carrito
-        </div>
+      <Link to="/" className="volver-btn">← Volver atrás</Link>
+
+      {mensajeVisible && (
+        <div className="mensaje-carrito">✅ Añadido al carrito</div>
       )}
 
-      <div className="detalle-superior">
-        <div className="caratula">
-          <img src={`/${juego.imagen}`} alt={juego.nombre} />
-        </div>
+      <div className="detalle-container animated-shadow">
 
-        <div className="detalle-info">
-          <h1>{juego.nombre}</h1>
-          <p className="precio">
-            {juego.precio === 0
-              ? "Gratis"
-              : `$${juego.precio?.toLocaleString("es-CL")}`}
-          </p>
+        {/* ===========================
+            PANEL IZQUIERDO
+        ============================ */}
+        <div className="detalle-left">
+          <img
+            src={juego.imagen}
+            alt={juego.nombre}
+            className="detalle-img"
+          />
 
-          <button
-              className="boton agregar-carrito"
-              onClick={() => { 
-                agregarAlCarrito(juego, setMensajeTexto, setMensajeVisible); 
-              }}>
+          <div className="detalle-info">
+            <h3><span className="label">Título:</span> {juego.nombre}</h3>
+            <p className="detalle-consola">
+              <span className="label">Consola:</span> {juego.consola}
+            </p>
+
+            <p className="detalle-precio">
+              <span className="label">Precio:</span>{" "}
+              {juego.precio === 0
+                ? "Gratis"
+                : `${juego.precio.toLocaleString("es-CL")} CLP`}
+            </p>
+
+            <button
+              className="detalle-btn"
+              onClick={() => agregarAlCarrito(juego)}
+            >
               Agregar al carrito
             </button>
+          </div>
         </div>
-      </div>
 
-      {juego.video && (
-        <div className="detalle-inferior">
-          <div className="video-container">
+        {/* ===========================
+            VIDEO GRANDE
+        ============================ */}
+        {juego.video && (
+          <div className="detalle-video-wrapper">
             <iframe
+              className="detalle-video"
               src={juego.video}
               title={`Trailer de ${juego.nombre}`}
               frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
           </div>
+        )}
 
-          <div className="descripcion-container">
-            <p className="descripcion">{juego.descripcion}</p>
-          </div>
-        </div>
-      )}
-    </div>
+        {/* ===========================
+            PANEL DESCRIPCIÓN
+        ============================ */}
+        {juego.descripcion && (
+          <aside className="detalle-description-panel">
+            <h3>Descripción del juego</h3>
+            <p>{juego.descripcion}</p>
+          </aside>
+        )}
+
+      </div>
+    </main>
   );
 }
 

@@ -41,7 +41,7 @@ function App() {
         {/* Ruta admin protegida */}
         <Route
           path="/Administrador"
-          element={usuario?.tipo === "admin" ? <Administrador /> : <Home />}
+          element={usuario?.rol === "ADMINISTRADOR" ? <Administrador /> : <Home />}
         />
       </Routes>
     </MainLayout>
