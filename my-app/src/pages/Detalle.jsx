@@ -57,9 +57,7 @@ function Detalle() {
 
       <div className="detalle-container animated-shadow">
 
-        {/* ===========================
-            PANEL IZQUIERDO
-        ============================ */}
+
         <div className="detalle-left">
           <img
             src={juego.imagen}
@@ -89,9 +87,6 @@ function Detalle() {
           </div>
         </div>
 
-        {/* ===========================
-            VIDEO GRANDE
-        ============================ */}
         {juego.video && (
           <div className="detalle-video-wrapper">
             <iframe
@@ -104,9 +99,6 @@ function Detalle() {
           </div>
         )}
 
-        {/* ===========================
-            PANEL DESCRIPCIÓN
-        ============================ */}
         {juego.descripcion && (
           <aside className="detalle-description-panel">
             <h3>Descripción del juego</h3>

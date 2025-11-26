@@ -1,7 +1,7 @@
 import * as XLSX from "xlsx";
 import emailjs from "@emailjs/browser";
 
-//funcion validar el formulario para contacto
+
 export function valformulario(event) {
   event.preventDefault();
 
@@ -81,7 +81,7 @@ export function moverCarrusel(direccion) {
   const carrusel = document.getElementById("carousel-productos");
   if (!carrusel) return;
 
-  const scrollAmount = 300; // cantidad que avanza por click
+  const scrollAmount = 300;
 
   carrusel.scrollBy({
     left: direccion * scrollAmount,
@@ -285,8 +285,8 @@ export async function cargarOrdenes() {
       total: compra.total,
       fecha: compra.fecha,
 
-      productos: compra.productos || [],     // texto resumido lo crea Administrador.jsx
-      productosRaw: compra.productos || []   // 🔥 NECESARIO para Ver más
+      productos: compra.productos || [],
+      productosRaw: compra.productos || []
     }));
 
   } catch (err) {
@@ -384,7 +384,6 @@ export async function actualizarUsuarioPanelAdmin(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)
   });
-
 
   let data = null;
   try {

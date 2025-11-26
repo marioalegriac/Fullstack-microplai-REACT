@@ -10,9 +10,6 @@ function Play() {
   const [mensajeVisible, setMensajeVisible] = useState(false);
   const [mensajeTexto, setMensajeTexto] = useState("");
 
-  // ===========================
-  // PAGINACIÓN
-  // ===========================
   const [pagina, setPagina] = useState(1);
   const itemsPorPagina = 12;
 
@@ -25,19 +22,32 @@ function Play() {
   }, [pagina, juegos]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/productos")
-      .then((res) => res.json())
-      .then((data) => {
+    const cargar = async () => {
+      try {
+        const resp = await fetch("http://localhost:8080/api/productos");
+
+        if (!resp.ok) {
+          throw new Error("Error al conectar con la API");
+        }
+
+        const data = await resp.json();
+
         const filtrados = data.filter(j => j.consola === "PS5");
+
         setJuegos(filtrados);
-        setCargando(false);
-      })
-      .catch((err) => {
+
+      } catch (err) {
         console.error(err);
         setError("No se pudo cargar el catálogo");
+
+      } finally {
         setCargando(false);
-      });
+      }
+    };
+
+    cargar();
   }, []);
+
 
   if (cargando) return <h2>Cargando catálogo...</h2>;
   if (error) return <h2>{error}</h2>;
@@ -52,9 +62,6 @@ function Play() {
       {/* TÍTULO */}
       <h2 className="console-title">PLAYSTATION</h2>
 
-      {/* ========================
-           VIDEO + TEXTO
-         ======================== */}
       <div className="console-section">
 
         <div className="console-video">
@@ -119,7 +126,6 @@ function Play() {
         ))}
       </div>
 
-      {/* PAGINACIÓN */}
       {totalPaginas > 1 && (
         <div className="catalogo-paginacion">
           <button

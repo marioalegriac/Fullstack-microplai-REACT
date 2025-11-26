@@ -42,7 +42,6 @@ function Contacto() {
   return (
     <main className="contact-pro">
 
-      {/* 🔥 TOAST PROFESIONAL */}
       {toastVisible && (
         <div className="toast-success">
           <span className="toast-icon">✔</span>
@@ -50,16 +49,13 @@ function Contacto() {
         </div>
       )}
 
-      {/* 🔷 TÍTULO */}
       <h1 className="contact-title">Contáctanos</h1>
       <p className="contact-sub">
         Déjanos tu mensaje y te responderemos lo antes posible.
       </p>
 
-      {/* 📩 FORMULARIO PROFESIONAL */}
       <form className="contact-form-pro" onSubmit={handleSubmit}>
         
-        {/* EMAIL */}
         <div className="input-box">
           <span className="input-icon"></span>
           <input
@@ -71,7 +67,6 @@ function Contacto() {
           />
         </div>
 
-        {/* ASUNTO */}
         <div className="input-box">
           <span className="input-icon"></span>
           <input
@@ -83,7 +78,6 @@ function Contacto() {
           />
         </div>
 
-        {/* MENSAJE */}
         <div className="input-box">
           <span className="input-icon icon-top"></span>
           <textarea
@@ -95,7 +89,6 @@ function Contacto() {
           ></textarea>
         </div>
 
-        {/* BOTONES */}
         <div className="contact-buttons">
           <button type="submit" className="btn-enviar">
             Enviar mensaje
@@ -107,7 +100,6 @@ function Contacto() {
         </div>
       </form>
 
-      {/* ℹ INFORMACIÓN EXTRA */}
       <div className="contact-info-pro">
         <h3>Información adicional</h3>
         <p><strong> Dirección:</strong> Santiago, Chile</p>

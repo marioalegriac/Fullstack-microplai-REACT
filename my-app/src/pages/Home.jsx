@@ -19,7 +19,6 @@ function Home() {
   return (
     <main className="home-page">
 
-      {/* VIDEO + TEXTO DESTACADO */}
       <div className="section-video-texto">
 
         {/* VIDEO */}
@@ -32,7 +31,7 @@ function Home() {
           ></iframe>
         </div>
 
-        {/* TEXTO SCROLLABLE */}
+        {/* TEXTO */}
         <div className="texto-container home-texto">
           <p>
             El principio de todo. Una adaptación del juego METAL GEAR SOLID 3: SNAKE
@@ -92,7 +91,11 @@ function Home() {
 
               <div className="juego-info">
                 <div className="titulo">{producto.nombre}</div>
-                <div className="descripcion">{producto.descripcion}</div>
+
+                <div className="consola">
+                  {producto.consola}
+                </div>
+
                 <div className="precio">
                   ${producto.precio.toLocaleString("es-CL")}
                 </div>

@@ -1,4 +1,4 @@
-// src/pages/Administrador.jsx
+
 import React, { useEffect, useState } from "react";
 import {
   cargarUsuarios,
@@ -8,8 +8,6 @@ import {
 } from "../funciones/funciones";
 
 import TablaDinamica from "../TablaDinamica";
-
-// Modales
 import EditarUsuarioModal from "../components/EditarUsuarioModal";
 import EditarProductoModal from "../components/EditarProductoModal";
 import CrearUsuarioModal from "../components/CrearUsuarioModal";
@@ -27,20 +25,18 @@ export default function Administrador() {
   const [vistaTabla, setVistaTabla] = useState("usuarios");
   const [filtroTexto, setFiltroTexto] = useState("");
 
-  // MODALES DE EDICIÓN
+
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
   const [modalUsuarioVisible, setModalUsuarioVisible] = useState(false);
 
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [modalProductoVisible, setModalProductoVisible] = useState(false);
 
-  // MODALES DE CREACIÓN
+
   const [modalCrearUsuarioVisible, setModalCrearUsuarioVisible] = useState(false);
   const [modalCrearProductoVisible, setModalCrearProductoVisible] = useState(false);
 
-  // =====================================================
-  // CARGA INICIAL
-  // =====================================================
+
   useEffect(() => {
     cargarTodo();
   }, []);
@@ -65,9 +61,7 @@ export default function Administrador() {
     setTimeout(() => setMensajeVisible(false), 3000);
   };
 
-  // =====================================================
-  // GESTIÓN USUARIOS
-  // =====================================================
+// gestiona los usuarios
   const handleGestionarUsuario = (usuario) => {
     setUsuarioSeleccionado(usuario);
     setModalUsuarioVisible(true);
@@ -85,9 +79,7 @@ export default function Administrador() {
     mostrarMensaje("🗑 Usuario eliminado");
   };
 
-  // =====================================================
-  // GESTIÓN PRODUCTOS
-  // =====================================================
+// gestiona los productos
   const handleGestionarProducto = (producto) => {
     setProductoSeleccionado(producto);
     setModalProductoVisible(true);
@@ -99,9 +91,6 @@ export default function Administrador() {
     mostrarMensaje("✅ Producto actualizado");
   };
 
-  // =====================================================
-  // TABLAS
-  // =====================================================
 
   const usuariosNormales = usuarios.filter((u) => u.rol !== "ADMINISTRADOR");
   const administradores = usuarios.filter((u) => u.rol === "ADMINISTRADOR");
@@ -153,12 +142,10 @@ export default function Administrador() {
       fechaFormateada: new Date(c.fecha).toLocaleDateString("es-CL"),
       totalMostrar: c.total.toLocaleString("es-CL") + " CLP",
 
-      // Texto resumido
       productos: c.productos
         .map((p) => `${p.producto_nombre} (${p.cantidad})`)
         .join(", "),
 
-      // 🔥 Lo que usa el modal Ver Más
       productosRaw: c.productos,
     }));
 
@@ -173,11 +160,6 @@ export default function Administrador() {
 
     sortDefault = { key: "fechaFormateada", direction: "desc" };
   }
-
-
-  // =====================================================
-  // RENDER
-  // =====================================================
 
   return (
     <section className="admin-dashboard">
@@ -254,7 +236,7 @@ export default function Administrador() {
         </div>
       </div>
 
-      {/* 📄 GENERAR REPORTES */}
+      {/* GENERAR REPORTES */}
       <div className="admin-section">
         <h3>Generar Reportes</h3>
 

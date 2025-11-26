@@ -10,9 +10,7 @@ function Nintendo() {
   const [mensajeVisible, setMensajeVisible] = useState(false);
   const [mensajeTexto, setMensajeTexto] = useState("");
 
-  // ==================================
-  // PAGINACIÓN
-  // ==================================
+
   const [pagina, setPagina] = useState(1);
   const itemsPorPagina = 12;
 
@@ -25,16 +23,30 @@ function Nintendo() {
   }, [pagina, juegos]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/productos")
-      .then((res) => res.json())
-      .then((data) => {
-        const filtrados = data.filter(
-          (j) => j.consola === "NINTENDO SWITCH 2"
-        );
+    const cargar = async () => {
+      try {
+        const resp = await fetch("http://localhost:8080/api/productos");
+
+        if (!resp.ok) {
+          throw new Error("Error al conectar con la API");
+        }
+
+        const data = await resp.json();
+
+        const filtrados = data.filter(j => j.consola === "NINTENDO SWITCH 2"); 
+
         setJuegos(filtrados);
-      })
-      .catch(() => setError("No se pudo cargar el catálogo Nintendo"))
-      .finally(() => setCargando(false));
+
+      } catch (err) {
+        console.error(err);
+        setError("No se pudo cargar el catálogo");
+
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    cargar();
   }, []);
 
   if (cargando) return <h2>Cargando catálogo...</h2>;
@@ -51,9 +63,7 @@ function Nintendo() {
       {/* TÍTULO */}
       <h2 className="console-title">NINTENDO</h2>
 
-      {/* ========================
-           VIDEO + TEXTO
-         ======================== */}
+
       <div className="console-section">
 
         {/* VIDEO */}
@@ -129,7 +139,7 @@ function Nintendo() {
         ))}
       </div>
 
-      {/* PAGINACIÓN */}
+
       {totalPaginas > 1 && (
         <div className="catalogo-paginacion">
           <button
