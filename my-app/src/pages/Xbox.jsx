@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { agregarAlCarrito } from '../funciones/funciones';
+import { agregarAlCarrito } from "../funciones/funciones";
 
 function Xbox() {
   const [juegos, setJuegos] = useState([]);
@@ -10,9 +10,6 @@ function Xbox() {
   const [mensajeVisible, setMensajeVisible] = useState(false);
   const [mensajeTexto, setMensajeTexto] = useState("");
 
-  // ==================================
-  // PAGINACIÓN
-  // ==================================
   const [pagina, setPagina] = useState(1);
   const itemsPorPagina = 12;
 
@@ -25,33 +22,55 @@ function Xbox() {
   }, [pagina, juegos]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/productos")
-      .then((res) => res.json())
-      .then((data) =>
-        setJuegos(
-          data.filter(
-            (j) =>
-              j.consola === "XBOX SERIES X|S" ||
-              j.consola === "XBOX Series X|S"
-          )
-        )
-      )
-      .catch(() => setError("No se pudo cargar el catálogo"))
-      .finally(() => setCargando(false));
+    setCargando(true);
+    setError(null);
+
+    const cargar = async () => {
+      try {
+        const resp = await fetch(
+          `${import.meta.env.VITE_API_URL}:8080/api/productos`
+        );
+
+        if (!resp.ok) {
+          throw new Error("Error al conectar con la API");
+        }
+
+        const data = await resp.json();
+
+        const filtrados = data.filter(
+          (j) => j.consola === "XBOX SERIES X|S"
+        );
+
+        setJuegos(filtrados);
+      } catch (err) {
+        console.error(err);
+        setError("No se pudo cargar el catálogo");
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    cargar();
   }, []);
 
-  if (cargando) return <h2>Cargando catálogo...</h2>;
-  if (error) return <h2>{error}</h2>;
+  if (cargando)
+    return <h2 style={{ textAlign: "center" }}>Cargando catálogo...</h2>;
+
+  if (error)
+    return (
+      <h2 style={{ textAlign: "center", color: "red" }}>{error}</h2>
+    );
 
   return (
     <main className="catalog-page">
 
+      {/* Mensaje carrito */}
       {mensajeVisible && (
         <div className="mensaje-carrito">{mensajeTexto}</div>
       )}
 
       {/* TÍTULO */}
-      <h2 className="console-title"><strong>Catálogo Xbox</strong></h2>
+      <h2 className="console-title">XBOX</h2>
 
       {/* VIDEO + TEXTO */}
       <div className="console-section">
@@ -60,6 +79,7 @@ function Xbox() {
           <iframe
             src="https://www.youtube.com/embed/0tUqIHwHDEc"
             title="Presentación Xbox Series X"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           ></iframe>
         </div>
@@ -80,7 +100,10 @@ function Xbox() {
 
       </div>
 
-      {/* CATÁLOGO */}
+      {/* TÍTULO CATÁLOGO */}
+      <h2 className="console-title">Catálogo Xbox</h2>
+
+      {/* GRID DEL CATÁLOGO */}
       <div className="catalogo-page">
 
         {juegosVisibles.map((juego) => (
@@ -97,14 +120,25 @@ function Xbox() {
             <div className="catalog-title">{juego.nombre}</div>
 
             <div className="catalog-price">
-              {juego.precio === 0 ? "Gratis" : ""}
-              {juego.precio.toLocaleString("es-CL")} CLP
+              {Number(juego.precio || 0) === 0
+                ? "Gratis"
+                : `${Number(juego.precio).toLocaleString("es-CL")} CLP`}
             </div>
 
             <button
               className="catalog-add-btn"
               onClick={() =>
-                agregarAlCarrito(juego, setMensajeTexto, setMensajeVisible)
+                agregarAlCarrito(
+                  {
+                    id: juego.id,
+                    nombre: juego.nombre,
+                    precio: juego.precio,
+                    consola: juego.consola,
+                    imagen: juego.imagen,
+                  },
+                  setMensajeTexto,
+                  setMensajeVisible
+                )
               }
             >
               Agregar al carrito

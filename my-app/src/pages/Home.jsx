@@ -8,23 +8,28 @@ function Home() {
   const [mensajeVisible, setMensajeVisible] = useState(false);
   const [mensajeTexto, setMensajeTexto] = useState("");
   const [productos, setProductos] = useState([]);
+  const [errorCarga, setErrorCarga] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/productos/carrusel")
-      .then((res) => res.json())
+    fetch(`${import.meta.env.VITE_API_URL}:8080/api/productos/carrusel`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Error cargando carrusel");
+        return res.json();
+      })
       .then((data) => setProductos(data))
-      .catch(() => console.log("Error al cargar carrusel"));
+      .catch(() => setErrorCarga(true));
   }, []);
 
   return (
     <main className="home-page">
 
+      {/* VIDEO + TEXTO */}
       <div className="section-video-texto">
 
         {/* VIDEO */}
         <div className="video-container">
           <iframe
-            src="https://www.youtube.com/embed/ajh3YHJ6baI"
+            src={`https://www.youtube.com/embed/ajh3YHJ6baI`}
             title="Trailer METAL GEAR SOLID Δ: SNAKE EATER"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -67,14 +72,22 @@ function Home() {
 
       </div>
 
-      {/* TÍTULO PRODUCTOS */}
+      {/* TÍTULO */}
       <h2 className="titulo-seccion">Productos destacados</h2>
 
+      {/* MENSAJE CARRITO */}
       {mensajeVisible && (
         <div className="mensaje-carrito">{mensajeTexto}</div>
       )}
 
-      {/* CARRUSEL DE PRODUCTOS */}
+      {/* ERROR DE CARGA */}
+      {errorCarga && (
+        <p style={{ color: "red", textAlign: "center" }}>
+          ❌ Error cargando productos destacados
+        </p>
+      )}
+
+      {/* CARRUSEL */}
       <div className="carousel-container">
         <div className="carousel" id="carousel-productos">
 
@@ -97,7 +110,7 @@ function Home() {
                 </div>
 
                 <div className="precio">
-                  ${producto.precio.toLocaleString("es-CL")}
+                  ${Number(producto.precio || 0).toLocaleString("es-CL")}
                 </div>
               </div>
 
@@ -124,6 +137,7 @@ function Home() {
           ))}
         </div>
 
+        {/* BOTONES */}
         <button className="carousel-btn prev" onClick={() => moverCarrusel(-1)}>
           ❮
         </button>

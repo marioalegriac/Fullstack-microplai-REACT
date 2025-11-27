@@ -1,13 +1,19 @@
 import * as XLSX from "xlsx";
 import emailjs from "@emailjs/browser";
 
+export function valformulario() {
+  const emailInput = document.getElementById('user_email');
+  const subjectInput = document.getElementById('subject');
+  const messageInput = document.getElementById('message');
 
-export function valformulario(event) {
-  event.preventDefault();
+  if (!emailInput || !subjectInput || !messageInput) {
+    alert("⚠️ El formulario aún no está listo");
+    return false;
+  }
 
-  const email = document.getElementById('user_email').value.trim();
-  const subject = document.getElementById('subject').value.trim();
-  const message = document.getElementById('message').value.trim();
+  const email = emailInput.value.trim();
+  const subject = subjectInput.value.trim();
+  const message = messageInput.value.trim();
 
   if (!email || !subject || !message) {
     alert("⚠️ Por favor, completa todos los campos.");
@@ -19,56 +25,51 @@ export function valformulario(event) {
 }
 
 
-
 export function validarRegistro(setMensajeTexto, setMensajeVisible) {
-        const nombre = document.getElementById('nombre').value.trim();
-        const apellido = document.getElementById('apellido').value.trim();
-        const correo = document.getElementById('correo').value.trim();
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        const errores = [];
+  const nombreInput = document.getElementById('nombre');
+  const apellidoInput = document.getElementById('apellido');
+  const correoInput = document.getElementById('correo');
+  const passInput = document.getElementById('password');
+  const confirmInput = document.getElementById('confirmPassword');
+  const errorContainer = document.getElementById('errores');
 
-        if (nombre.length > 100) {
-            errores.push("El nombre no puede tener más de 100 caracteres.");
-        }
+  if (!nombreInput || !apellidoInput || !correoInput || !passInput || !confirmInput || !errorContainer) {
+    alert("⚠️ Formulario no listo");
+    return;
+  }
 
-        if (apellido.length > 100) {
-            errores.push("El apellido no puede tener más de 100 caracteres.");
-        }
+  const nombre = nombreInput.value.trim();
+  const apellido = apellidoInput.value.trim();
+  const correo = correoInput.value.trim();
+  const password = passInput.value;
+  const confirmPassword = confirmInput.value;
 
-        if (
-            !(
-                correo.endsWith('@duocuc.cl')||
-                correo.endsWith('@profesor.duoc.cl')||
-                correo.endsWith('@gmail.com')
-            )
-        ){
-            errores.push("El correo debe ser @duocuc.cl, @profesor.duoc.cl o @gmail.com");
-        }
+  const errores = [];
 
-        if (password.length < 5 || password.length > 20) {
-            errores.push("La contraseña debe tener entre 5 y 20 caracteres.");
-        }
+  if (nombre.length > 100) errores.push("El nombre no puede tener más de 100 caracteres.");
+  if (apellido.length > 100) errores.push("El apellido no puede tener más de 100 caracteres.");
+  if (!(correo.endsWith('@duocuc.cl') || correo.endsWith('@profesor.duoc.cl') || correo.endsWith('@gmail.com')))
+    errores.push("El correo debe ser @duocuc.cl, @profesor.duoc.cl o @gmail.com");
 
-        if (!/[0-9]/.test(password)) {
-            errores.push("La contraseña debe tener al menos un número.");
-        }
+  if (password.length < 5 || password.length > 20)
+    errores.push("La contraseña debe tener entre 5 y 20 caracteres.");
 
-        if (password !== confirmPassword) {
-            errores.push("Las contraseñas no coinciden.");
-        }
+  if (!/[0-9]/.test(password))
+    errores.push("La contraseña debe tener al menos un número.");
 
-        const errorContainer = document.getElementById('errores');
-        if (errores.length > 0) {
-            errorContainer.innerHTML = errores.join('<br>');
-        } else {
-            errorContainer.innerHTML = "";
-            setMensajeTexto("✅ Registro exitoso");
-            setMensajeVisible(true);
-            setTimeout(() => setMensajeVisible(false), 3000);
-            document.getElementById('registerForm').reset();
-        }
-    }
+  if (password !== confirmPassword)
+    errores.push("Las contraseñas no coinciden.");
+
+  if (errores.length > 0) {
+    errorContainer.innerHTML = errores.join('<br>');
+  } else {
+    errorContainer.innerHTML = "";
+    setMensajeTexto("✅ Registro exitoso");
+    setMensajeVisible(true);
+    setTimeout(() => setMensajeVisible(false), 3000);
+    document.getElementById('registerForm')?.reset();
+  }
+}
 
 
 
@@ -90,43 +91,47 @@ export function moverCarrusel(direccion) {
 }
 
 
-    document.addEventListener("DOMContentLoaded", function () {
+  export function inicializarEmailJS() {
+    if (typeof window === "undefined") return;
+
     emailjs.init("lWDqvGY4Fj9noKYtz");
 
     const contactForm = document.getElementById("contactForm");
+    if (!contactForm) return;
 
-    if (contactForm) {
-        contactForm.addEventListener("submit", function (event) {
-            event.preventDefault();
+    contactForm.addEventListener("submit", function (event) {
+      event.preventDefault();
 
-            if (!valformulario()) return;
+      if (!valformulario()) return;
 
-            const userEmail = contactForm.user_email.value;
-            const subject = contactForm.subject.value;
+      const userEmail = contactForm.user_email.value;
+      const subject = contactForm.subject.value;
 
-            const templateParams = {
-                userEmail: userEmail,
-                subject: subject,
-                message: `Hemos recibido su solicitud correctamente.
-Nuestro equipo está revisando su caso y nos pondremos en contacto con usted a la brevedad.
+      const templateParams = {
+        userEmail,
+        subject,
+        message: `Hemos recibido su solicitud correctamente.
+  Nuestro equipo está revisando su caso y nos pondremos en contacto con usted a la brevedad.
 
-Agradecemos su paciencia y quedamos atentos para asistirle en lo que necesite.
+  Agradecemos su paciencia y quedamos atentos para asistirle en lo que necesite.
 
-Saludos cordiales,
-Microplai.`
-            };
+  Saludos cordiales,
+  Microplai.`
+      };
 
-            emailjs.send("service_2wpcqd9", "template_nsebgim", templateParams)
-                .then(() => {
-                    alert("Correo enviado con éxito al usuario");
-                    contactForm.reset();
-                })
-                .catch((error) => {
-                    alert("Error al enviar: " + JSON.stringify(error));
-                });
+      emailjs
+        .send("service_2wpcqd9", "template_nsebgim", templateParams)
+        .then(() => {
+          alert("Correo enviado con éxito al usuario");
+          contactForm.reset();
+        })
+        .catch((error) => {
+          alert("Error al enviar: " + JSON.stringify(error));
         });
-    }
-});
+    });
+  }
+
+
 
 
 // FUNCION PARA LA BD
@@ -156,7 +161,7 @@ export async function registrarUsuario(
   }
 
   try {
-    const response = await fetch('http://localhost:8081/api/auth/register', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}:8081/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nombre, apellido, correo, contrasena: password })
@@ -196,8 +201,14 @@ export async function registrarUsuario(
 
 //Login con la base de datos
 
-export async function validarLogin(correo, password, setMensajeTexto, setMensajeVisible, setError) {
-  setError('');
+export async function validarLogin(
+  correo,
+  password,
+  setMensajeTexto,
+  setMensajeVisible,
+  setError
+) {
+  setError("");
 
   if (!correo || !password) {
     setError("Por favor, completa todos los campos.");
@@ -216,19 +227,24 @@ export async function validarLogin(correo, password, setMensajeTexto, setMensaje
   }
 
   try {
-    const response = await fetch('http://localhost:8081/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ correo, contrasena: password })
-    });
+    const response = await fetch(
+      "http://100.30.242.183:8081/api/auth/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          correo: correo,
+          password: password,
+        }),
+      }
+    );
 
     const data = await response.json();
 
     if (!response.ok || data.message !== "Login exitoso") {
-      setError(data.message || 'Usuario o contraseña incorrectos');
+      setError(data.message || "Usuario o contraseña incorrectos");
       return false;
     }
-
 
     localStorage.setItem(
       "usuario",
@@ -237,7 +253,7 @@ export async function validarLogin(correo, password, setMensajeTexto, setMensaje
         nombre: data.nombre,
         apellido: data.apellido,
         correo: data.correo,
-        rol: data.rol
+        rol: data.rol,
       })
     );
 
@@ -246,7 +262,6 @@ export async function validarLogin(correo, password, setMensajeTexto, setMensaje
     setTimeout(() => setMensajeVisible(false), 3000);
 
     return true;
-
   } catch (err) {
     console.error(err);
     setError("❌ Error de conexión con el servidor");
@@ -257,11 +272,12 @@ export async function validarLogin(correo, password, setMensajeTexto, setMensaje
 
 
 
+
 //---------------------------------------------------------------PANEL ADMIN----------------------------------------------------------------------------------------------------
 
 // carga Usuarios
 export async function cargarUsuarios() {
-  const resp = await fetch("http://localhost:8081/api/auth/usuarios");
+  const resp = await fetch(`${import.meta.env.VITE_API_URL}:8081/api/auth/usuarios`);
   if (!resp.ok) throw new Error("Error cargando usuarios");
   return await resp.json();
 }
@@ -269,7 +285,8 @@ export async function cargarUsuarios() {
 // Órdenes con detalle de productos
 export async function cargarOrdenes() {
   try {
-    const resp = await fetch("http://localhost:8082/api/carrito/compras");
+    const resp = await fetch(`${import.meta.env.VITE_API_URL}:8082/api/carrito/compras`
+);
 
     if (!resp.ok) {
       throw new Error("Error cargando órdenes desde la API");
@@ -299,7 +316,7 @@ export async function cargarOrdenes() {
 
 // Eliminar usuario
 export async function eliminarUsuario(id) {
-  const resp = await fetch(`http://localhost:8081/api/auth/usuarios/${id}`, {
+  const resp = await fetch(`${import.meta.env.VITE_API_URL}:8081/api/auth/usuarios/${id}`, {
     method: "DELETE"
   });
 
@@ -379,7 +396,8 @@ export async function actualizarUsuarioPanelAdmin(
     body.contrasena = passTrim;
   }
 
-  const resp = await fetch(`http://localhost:8081/api/auth/usuarios/${id}`, {
+  const resp = await fetch(`${import.meta.env.VITE_API_URL}:8081/api/auth/usuarios/${id}`
+, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)
@@ -401,16 +419,13 @@ export async function actualizarUsuarioPanelAdmin(
 }
 
 
-
-
 // Generar reportes
 export async function generarReporte(tipo) {
   let datos = [];
   let nombreHoja = "";
 
-
   if (tipo === "usuarios") {
-    const resp = await fetch("http://localhost:8081/api/auth/usuarios");
+    const resp = await fetch(`${import.meta.env.VITE_API_URL}:8081/api/auth/usuarios`);
 
     if (!resp.ok) {
       alert("⚠ Error obteniendo usuarios desde la API");
@@ -418,13 +433,12 @@ export async function generarReporte(tipo) {
     }
 
     const usuarios = await resp.json();
-
     datos = usuarios.filter(u => u.rol !== "ADMINISTRADOR");
     nombreHoja = "Usuarios";
   }
 
   if (tipo === "admins") {
-    const resp = await fetch("http://localhost:8081/api/auth/usuarios?rol=ADMINISTRADOR");
+    const resp = await fetch(`${import.meta.env.VITE_API_URL}:8081/api/auth/usuarios?rol=ADMINISTRADOR`);
 
     if (!resp.ok) {
       alert("⚠ Error obteniendo administradores desde la API");
@@ -436,7 +450,7 @@ export async function generarReporte(tipo) {
   }
 
   if (tipo === "compras") {
-    const resp = await fetch("http://localhost:8082/api/carrito/compras");
+    const resp = await fetch(`${import.meta.env.VITE_API_URL}:8082/api/carrito/compras`);
 
     if (!resp.ok) {
       alert("⚠ Error obteniendo compras desde la API");
@@ -482,25 +496,28 @@ export async function generarReporte(tipo) {
     nombreHoja = "Compras";
   }
 
+  if (!datos || datos.length === 0) {
+    alert("⚠ No hay datos para exportar");
+    return;
+  }
+
   const libro = XLSX.utils.book_new();
   const hoja = XLSX.utils.json_to_sheet(datos);
 
-
-  const columnas = Object.keys(datos[0] || {}).map((key) => ({
+  const columnas = Object.keys(datos[0]).map((key) => ({
     wch: Math.max(key.length, 15),
   }));
   hoja["!cols"] = columnas;
 
   XLSX.utils.book_append_sheet(libro, hoja, nombreHoja);
-
-
   XLSX.writeFile(libro, `reporte_${tipo}.xlsx`);
 }
 
 
+
 //Cargar compras
 export async function cargarProductos() {
-  const resp = await fetch("http://localhost:8080/api/productos");
+  const resp = await fetch(`${import.meta.env.VITE_API_URL}:8080/api/productos`);
 
   if (!resp.ok) {
     throw new Error("Error cargando productos desde la API");
@@ -533,7 +550,7 @@ export async function actualizarProductoPanelAdmin(id, { nombre, consola, precio
   if (consolaTrim) body.consola = consolaTrim;
   if (!isNaN(precioNum)) body.precio = precioNum;
 
-  const resp = await fetch(`http://localhost:8080/api/productos/${id}`, {
+  const resp = await fetch(`${import.meta.env.VITE_API_URL}:8080/api/productos/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)
@@ -595,7 +612,7 @@ export async function crearProductoPanelAdmin({
     imagen: imagenTrim
   };
 
-  const resp = await fetch("http://localhost:8080/api/productos", {
+  const resp = await fetch(`${import.meta.env.VITE_API_URL}:8080/api/productos`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body)
@@ -661,7 +678,7 @@ export async function registrarUsuarioPanelAdmin(nuevoUsuario) {
   }
 
 
-  const response = await fetch("http://localhost:8081/api/auth/register", {
+  const response = await fetch(`${import.meta.env.VITE_API_URL}:8081/api/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -790,7 +807,7 @@ export async function confirmarCompraCarrito({
       }))
     };
 
-    const respuesta = await fetch("http://localhost:8082/api/carrito/compras", {
+    const respuesta = await fetch(`${import.meta.env.VITE_API_URL}:8082/api/carrito/compras`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(cuerpo)

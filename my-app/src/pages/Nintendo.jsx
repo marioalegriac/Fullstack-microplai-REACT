@@ -10,7 +10,6 @@ function Nintendo() {
   const [mensajeVisible, setMensajeVisible] = useState(false);
   const [mensajeTexto, setMensajeTexto] = useState("");
 
-
   const [pagina, setPagina] = useState(1);
   const itemsPorPagina = 12;
 
@@ -23,9 +22,14 @@ function Nintendo() {
   }, [pagina, juegos]);
 
   useEffect(() => {
+    setCargando(true);
+    setError(null);
+
     const cargar = async () => {
       try {
-        const resp = await fetch("http://localhost:8080/api/productos");
+        const resp = await fetch(
+          `${import.meta.env.VITE_API_URL}:8080/api/productos`
+        );
 
         if (!resp.ok) {
           throw new Error("Error al conectar con la API");
@@ -33,14 +37,14 @@ function Nintendo() {
 
         const data = await resp.json();
 
-        const filtrados = data.filter(j => j.consola === "NINTENDO SWITCH 2"); 
+        const filtrados = data.filter(
+          (j) => j.consola === "NINTENDO SWITCH 2"
+        );
 
         setJuegos(filtrados);
-
       } catch (err) {
         console.error(err);
         setError("No se pudo cargar el catálogo");
-
       } finally {
         setCargando(false);
       }
@@ -49,8 +53,13 @@ function Nintendo() {
     cargar();
   }, []);
 
-  if (cargando) return <h2>Cargando catálogo...</h2>;
-  if (error) return <h2>{error}</h2>;
+  if (cargando)
+    return <h2 style={{ textAlign: "center" }}>Cargando catálogo...</h2>;
+
+  if (error)
+    return (
+      <h2 style={{ textAlign: "center", color: "red" }}>{error}</h2>
+    );
 
   return (
     <main className="catalog-page">
@@ -63,7 +72,6 @@ function Nintendo() {
       {/* TÍTULO */}
       <h2 className="console-title">NINTENDO</h2>
 
-
       <div className="console-section">
 
         {/* VIDEO */}
@@ -71,6 +79,7 @@ function Nintendo() {
           <iframe
             src="https://www.youtube.com/embed/0QeqO0kFz-E"
             title="Presentación Nintendo Switch 2"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           ></iframe>
         </div>
@@ -122,14 +131,25 @@ function Nintendo() {
             <div className="catalog-title">{juego.nombre}</div>
 
             <div className="catalog-price">
-              {juego.precio === 0 ? "Gratis" : ""}
-              {juego.precio.toLocaleString("es-CL")} CLP
+              {Number(juego.precio || 0) === 0
+                ? "Gratis"
+                : `${Number(juego.precio).toLocaleString("es-CL")} CLP`}
             </div>
 
             <button
               className="catalog-add-btn"
               onClick={() =>
-                agregarAlCarrito(juego, setMensajeTexto, setMensajeVisible)
+                agregarAlCarrito(
+                  {
+                    id: juego.id,
+                    nombre: juego.nombre,
+                    precio: juego.precio,
+                    consola: juego.consola,
+                    imagen: juego.imagen,
+                  },
+                  setMensajeTexto,
+                  setMensajeVisible
+                )
               }
             >
               Agregar al carrito
@@ -138,7 +158,6 @@ function Nintendo() {
           </div>
         ))}
       </div>
-
 
       {totalPaginas > 1 && (
         <div className="catalogo-paginacion">

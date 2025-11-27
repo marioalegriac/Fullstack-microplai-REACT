@@ -1,47 +1,18 @@
 import React, { useEffect, useState } from "react";
-import emailjs from "@emailjs/browser";
+import { inicializarEmailJS } from "../funciones/funciones"; // ✅ USAMOS TU FUNCIÓN
 
 function Contacto() {
   const [toastVisible, setToastVisible] = useState(false);
 
+  // ✅ Inicializa EmailJS SOLO cuando se monta el componente
   useEffect(() => {
-    emailjs.init("lWDqvGY4Fj9noKYtz");
+    inicializarEmailJS();
   }, []);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const form = new FormData(e.target);
-
-    const templateParams = {
-      userEmail: form.get("user_email"),
-      subject: form.get("subject"),
-      message:
-        form.get("message") ||
-        `Hemos recibido su solicitud correctamente.
-        Nuestro equipo está revisando su caso y nos pondremos en contacto a la brevedad.
-        Saludos cordiales, Microplai.`,
-    };
-
-    emailjs
-      .send("service_2wpcqd9", "template_nsebgim", templateParams)
-      .then(() => {
-        setToastVisible(true);
-
-        setTimeout(() => {
-          setToastVisible(false);
-        }, 2600);
-
-        e.target.reset();
-      })
-      .catch((error) => {
-        alert("Error al enviar: " + JSON.stringify(error));
-      });
-  };
 
   return (
     <main className="contact-pro">
 
+      {/* ✅ TOAST DE CONFIRMACIÓN */}
       {toastVisible && (
         <div className="toast-success">
           <span className="toast-icon">✔</span>
@@ -54,8 +25,9 @@ function Contacto() {
         Déjanos tu mensaje y te responderemos lo antes posible.
       </p>
 
-      <form className="contact-form-pro" onSubmit={handleSubmit}>
-        
+      {/* ✅ EL SUBMIT LO MANEJA functions.js */}
+      <form className="contact-form-pro" id="contactForm">
+
         <div className="input-box">
           <span className="input-icon"></span>
           <input
@@ -90,7 +62,14 @@ function Contacto() {
         </div>
 
         <div className="contact-buttons">
-          <button type="submit" className="btn-enviar">
+          <button
+            type="submit"
+            className="btn-enviar"
+            onClick={() => {
+              setToastVisible(true);
+              setTimeout(() => setToastVisible(false), 2600);
+            }}
+          >
             Enviar mensaje
           </button>
 
@@ -102,11 +81,12 @@ function Contacto() {
 
       <div className="contact-info-pro">
         <h3>Información adicional</h3>
-        <p><strong> Dirección:</strong> Santiago, Chile</p>
-        <p><strong> Teléfono:</strong> +56 9 1234 5678</p>
-        <p><strong> Horario:</strong> Lunes a Viernes — 9:00 a 18:00</p>
-        <p><strong> Soporte:</strong> soporte@microplai.cl</p>
+        <p><strong>Dirección:</strong> Santiago, Chile</p>
+        <p><strong>Teléfono:</strong> +56 9 1234 5678</p>
+        <p><strong>Horario:</strong> Lunes a Viernes — 9:00 a 18:00</p>
+        <p><strong>Soporte:</strong> soporte@microplai.cl</p>
       </div>
+
     </main>
   );
 }

@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { agregarAlCarrito } from '../funciones/funciones';
+import { agregarAlCarrito } from "../funciones/funciones";
 
 function Play() {
   const [juegos, setJuegos] = useState([]);
@@ -22,9 +22,14 @@ function Play() {
   }, [pagina, juegos]);
 
   useEffect(() => {
+    setCargando(true);
+    setError(null);
+
     const cargar = async () => {
       try {
-        const resp = await fetch("http://localhost:8080/api/productos");
+        const resp = await fetch(
+          `${import.meta.env.VITE_API_URL}:8080/api/productos`
+        );
 
         if (!resp.ok) {
           throw new Error("Error al conectar con la API");
@@ -32,14 +37,14 @@ function Play() {
 
         const data = await resp.json();
 
-        const filtrados = data.filter(j => j.consola === "PS5");
+        const filtrados = data.filter(
+          (j) => j.consola === "PS5"
+        );
 
         setJuegos(filtrados);
-
       } catch (err) {
         console.error(err);
         setError("No se pudo cargar el catálogo");
-
       } finally {
         setCargando(false);
       }
@@ -48,9 +53,13 @@ function Play() {
     cargar();
   }, []);
 
+  if (cargando)
+    return <h2 style={{ textAlign: "center" }}>Cargando catálogo...</h2>;
 
-  if (cargando) return <h2>Cargando catálogo...</h2>;
-  if (error) return <h2>{error}</h2>;
+  if (error)
+    return (
+      <h2 style={{ textAlign: "center", color: "red" }}>{error}</h2>
+    );
 
   return (
     <main className="catalog-page">
@@ -68,11 +77,12 @@ function Play() {
           <iframe
             src="https://www.youtube.com/embed/RkC0l4iekYo"
             title="Presentacion PS5"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           ></iframe>
         </div>
 
-        {/* TEXTO --------------- */}
+        {/* TEXTO */}
         <div className="console-text">
           <p>
             Sony es una de las marcas más reconocidas y exitosas en el mundo de
@@ -101,27 +111,46 @@ function Play() {
           <div key={juego.id} className="catalog-item">
 
             <Link to={`/detalle/${juego.id}`}>
-              <img className="catalog-img" src={juego.imagen} alt={juego.nombre} />
+              <img
+                className="catalog-img"
+                src={juego.imagen}
+                alt={juego.nombre}
+              />
             </Link>
 
             <div className="catalog-title">{juego.nombre}</div>
 
             <div className="catalog-desc">
-              {juego.descripcion?.substring(0, 80)}...
+              {juego.descripcion
+                ? juego.descripcion.substring(0, 80) + "..."
+                : "Sin descripción"}
             </div>
 
             <div className="catalog-price">
-              {juego.precio.toLocaleString("es-CL")} CLP
+              {Number(juego.precio || 0) === 0
+                ? "Gratis"
+                : `${Number(juego.precio).toLocaleString("es-CL")} CLP`}
             </div>
 
             <button
               className="catalog-add-btn"
               onClick={() =>
-                agregarAlCarrito(juego, setMensajeTexto, setMensajeVisible)
+                agregarAlCarrito(
+                  {
+                    id: juego.id,
+                    nombre: juego.nombre,
+                    precio: juego.precio,
+                    consola: juego.consola,
+                    imagen: juego.imagen,
+                  },
+                  setMensajeTexto,
+                  setMensajeVisible
+                )
               }
             >
               Agregar al carrito
             </button>
+
           </div>
         ))}
       </div>

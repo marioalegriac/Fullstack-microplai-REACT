@@ -6,7 +6,6 @@ function Blogs() {
     <main>
       <h1 className="reviews-title">Reviews</h1>
 
-      {/* TARJETA 1 */}
       <div className="review-card">
         <div className="review-video">
           <iframe
@@ -48,7 +47,6 @@ function Blogs() {
         </div>
       </div>
 
-      {/* TARJETA 2 */}
       <div className="review-card">
         <div className="review-video">
           <iframe
@@ -78,7 +76,6 @@ function Blogs() {
         </div>
       </div>
 
-      {/* TARJETA 3 */}
       <div className="review-card">
         <div className="review-video">
           <iframe

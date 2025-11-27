@@ -10,7 +10,10 @@ function Detalle() {
   const [mensajeVisible, setMensajeVisible] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/productos/${id}`)
+    setCargando(true);
+    setError(null);
+
+    fetch(`${import.meta.env.VITE_API_URL}:8080/api/productos/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Juego no encontrado");
         return res.json();
@@ -27,10 +30,10 @@ function Detalle() {
 
   const agregarAlCarrito = (juego) => {
     const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-    const existe = carrito.find((item) => item.id === juego.id);
+    const index = carrito.findIndex((item) => item.id === juego.id);
 
-    if (existe) {
-      existe.cantidad = (existe.cantidad || 1) + 1;
+    if (index !== -1) {
+      carrito[index].cantidad = (carrito[index].cantidad || 1) + 1;
     } else {
       carrito.push({ ...juego, cantidad: 1 });
     }
@@ -42,9 +45,9 @@ function Detalle() {
     setTimeout(() => setMensajeVisible(false), 1500);
   };
 
-  if (cargando) return <h2>Cargando información...</h2>;
-  if (error) return <h2>{error}</h2>;
-  if (!juego) return <h2>Juego no encontrado</h2>;
+  if (cargando) return <h2 style={{ textAlign: "center" }}>Cargando información...</h2>;
+  if (error) return <h2 style={{ textAlign: "center", color: "red" }}>{error}</h2>;
+  if (!juego) return <h2 style={{ textAlign: "center" }}>Juego no encontrado</h2>;
 
   return (
     <main className="detalle-page">
@@ -57,7 +60,7 @@ function Detalle() {
 
       <div className="detalle-container animated-shadow">
 
-
+        {/* IZQUIERDA */}
         <div className="detalle-left">
           <img
             src={juego.imagen}
@@ -66,16 +69,19 @@ function Detalle() {
           />
 
           <div className="detalle-info">
-            <h3><span className="label">Título:</span> {juego.nombre}</h3>
+            <h3>
+              <span className="label">Título:</span> {juego.nombre}
+            </h3>
+
             <p className="detalle-consola">
               <span className="label">Consola:</span> {juego.consola}
             </p>
 
             <p className="detalle-precio">
               <span className="label">Precio:</span>{" "}
-              {juego.precio === 0
+              {Number(juego.precio || 0) === 0
                 ? "Gratis"
-                : `${juego.precio.toLocaleString("es-CL")} CLP`}
+                : `${Number(juego.precio).toLocaleString("es-CL")} CLP`}
             </p>
 
             <button
@@ -87,6 +93,7 @@ function Detalle() {
           </div>
         </div>
 
+        {/* VIDEO */}
         {juego.video && (
           <div className="detalle-video-wrapper">
             <iframe
@@ -94,11 +101,13 @@ function Detalle() {
               src={juego.video}
               title={`Trailer de ${juego.nombre}`}
               frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
           </div>
         )}
 
+        {/* DESCRIPCIÓN */}
         {juego.descripcion && (
           <aside className="detalle-description-panel">
             <h3>Descripción del juego</h3>
